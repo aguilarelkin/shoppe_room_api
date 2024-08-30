@@ -7,7 +7,7 @@ Esta aplicación proporciona una experiencia de compra completa, permitiendo a l
 * Navegar por un catálogo de productos.
 * Buscar productos por nombre.
 * Ver detalles de productos, incluyendo imágenes, descripciones y precios.
-* Agregar productos a un carritode compras.
+* Agregar productos a un carrito de compras.
 * Realizar compras.
 
 **Características:**
