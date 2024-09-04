@@ -52,7 +52,11 @@ import androidx.navigation.NavHostController
 import com.androsh.shopee.ui.navigation.Route
 
 @Composable
-fun Info(navController: NavHostController, innerPadding: PaddingValues) {
+fun Info(
+    navController: NavHostController,
+    innerPadding: PaddingValues,
+    infoViewModel: InfoViewModel
+) {
     Box(modifier = Modifier.padding(innerPadding)) {
         MainInfo(navController)
     }

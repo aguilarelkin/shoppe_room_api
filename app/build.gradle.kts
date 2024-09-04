@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.dagger.hilt.navigation)
     //implementation(libs.androidx.material3.android)
     kapt(libs.kapt.hilt)
+    implementation(libs.dagger.javapoet)
 
     //Retrofit
     implementation(libs.retrofit)
