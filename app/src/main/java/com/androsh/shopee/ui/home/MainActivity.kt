@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -56,14 +57,16 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
         composable(route = Route.Description.route, arguments = listOf(navArgument("id") {
             type = NavType.StringType
         })) {
-            val id = it.arguments?.getString("id")
-            DescriptionScreen(navController, id)
+            DescriptionScreen(navController, getArgument(it, "id"))
         }
         composable(route = Route.Operation.route, arguments = listOf(navArgument("id") {
             type = NavType.StringType
         })) {
-            val id = it.arguments?.getString("id")
-            Operation(id)
+            Operation(getArgument(it, "id"))
         }
     }
+}
+
+private fun getArgument(navBackStackEntry: NavBackStackEntry, key: String): String? {
+    return navBackStackEntry.arguments?.getString(key)
 }
