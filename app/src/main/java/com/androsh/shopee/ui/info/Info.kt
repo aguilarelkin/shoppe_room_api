@@ -247,11 +247,12 @@ private fun ItemProduct(product: ProductModel, navController: NavHostController)
         shape = RoundedCornerShape(16.dp),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            AsyncImage(.
+            AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
                     .data(product.images.first())
                     .crossfade(true)
-                    .placeholder(R.drawable.app),
+                    .placeholder(R.drawable.app)
+                    .build(),
                 contentDescription = "image",
 
                 contentScale = ContentScale.FillHeight,
