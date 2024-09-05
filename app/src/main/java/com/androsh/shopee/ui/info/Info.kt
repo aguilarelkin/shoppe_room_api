@@ -58,18 +58,18 @@ fun Info(
     infoViewModel: InfoViewModel
 ) {
     Box(modifier = Modifier.padding(innerPadding)) {
-        MainInfo(navController)
+        MainInfo(navController, infoViewModel)
     }
 }
 
 //@Preview(showSystemUi = true)
 @Composable
-private fun MainInfo(navController: NavHostController) {
+private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewModel) {
     Column {
         TopBar(navController = navController, onSearch = { println(it) })
         CategoryProduct()
         LevelText(product = "Productos")
-        ListProduct(navController)
+        ListProduct(navController, infoViewModel)
     }
 }
 
@@ -195,7 +195,7 @@ private fun LevelText(product: String) {
 }
 
 @Composable
-private fun ListProduct(navController: NavHostController) {
+private fun ListProduct(navController: NavHostController, infoViewModel: InfoViewModel) {
     val options =
         listOf("Limpiar Filtro", "Precio", "Descuento", "Categoria", "Stock", "Marca", "Rating")
     if (options.isNotEmpty()) {
