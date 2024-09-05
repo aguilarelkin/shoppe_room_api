@@ -1,5 +1,6 @@
 package com.androsh.shopee.ui.operation
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,8 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Operation(id: String?) {
-    DataOperation(id)
+fun Operation(id: String? = null) {
+    if (id != null) {
+        if (id.isNotBlank()) {
+            DataOperation(id)
+        }
+    }else {
+        Log.i("TAG", "Operation: $id")
+    }
 }
 
 @Composable

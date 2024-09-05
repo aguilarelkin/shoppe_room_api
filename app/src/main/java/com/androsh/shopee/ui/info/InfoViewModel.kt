@@ -19,6 +19,10 @@ class InfoViewModel @Inject constructor(private val productoRepository: ProductR
     private val _uiState = MutableStateFlow(InfoUiState())
     val uiState: StateFlow<InfoUiState> = _uiState
 
+    init {
+        getProducts()
+    }
+
     fun onChangedQuery(query: String) {
         _uiState.value = _uiState.value.copy(query = query)
     }

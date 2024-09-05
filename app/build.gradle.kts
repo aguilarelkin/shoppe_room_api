@@ -95,6 +95,9 @@ dependencies {
     implementation(libs.roomKtx)
     kapt(libs.roomCompiler)
 
+    //Coil
+    implementation(libs.coil.image)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

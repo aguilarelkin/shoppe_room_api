@@ -54,6 +54,9 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
             val infoViewModel = hiltViewModel<InfoViewModel>()
             Info(navController, innerPadding, infoViewModel)
         }
+        composable(Route.OperationCreate.route) {
+            Operation()
+        }
         composable(route = Route.Description.route, arguments = listOf(navArgument("id") {
             type = NavType.StringType
         })) {
@@ -62,7 +65,7 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
         composable(route = Route.Operation.route, arguments = listOf(navArgument("id") {
             type = NavType.StringType
         })) {
-            Operation(getArgument(it, "id"))
+            Operation(id = getArgument(it, "id"))
         }
     }
 }

@@ -14,9 +14,12 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
             return it.products.sortedByDescending { order ->
                 order.rating
             }.map { data ->
+                Log.i("Error Api", "Error: ${data}")
+                //Expectation
                 data.toDomain()
+
             }
-        }.onFailure { Log.i("Error Api", "Error: ${it.message}") }
+        }.onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
 
@@ -24,13 +27,13 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
         runCatching { productApiService.getProduct(id) }.onSuccess {
             return it.toDomain()
         }
-            .onFailure { Log.i("Error Api", "Error: ${it.message}") }
+            .onFailure { Log.i("Error Api", "Error: ${it}") }
         return ProductModel()
     }
 
     override suspend fun getCategories(): List<String> {
         runCatching { productApiService.getCategories() }.onSuccess { return it }
-            .onFailure { Log.i("Error Api", "Error: ${it.message}") }
+            .onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
 
@@ -41,19 +44,19 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
             }.map { data ->
                 data.toDomain()
             }
-        }.onFailure { Log.i("Error Api", "Error: ${it.message}") }
+        }.onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
 
     override suspend fun addProduct(productModel: ProductModel): List<String> {
         runCatching { productApiService.addProduct(productModel) }.onSuccess { return it }
-            .onFailure { Log.i("Error Api", "Error: ${it.message}") }
+            .onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
 
     override suspend fun updateProduct(productModel: ProductModel, id: String): List<String> {
         runCatching { productApiService.updateProduct(productModel, id) }.onSuccess { return it }
-            .onFailure { Log.i("Error Api", "Error: ${it.message}") }
+            .onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
 
@@ -61,7 +64,7 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
         runCatching { productApiService.deleteProduct(id) }.onSuccess {
             return it.toDomain()
         }
-            .onFailure { Log.i("Error Api", "Error: ${it.message}") }
+            .onFailure { Log.i("Error Api", "Error: ${it}") }
         return ProductModel()
     }
 }
