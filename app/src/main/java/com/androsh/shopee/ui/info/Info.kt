@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.List
@@ -80,8 +81,12 @@ fun Info(
 @Composable
 private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewModel) {
     Column {
-        TopBar(navController = navController, onSearch = { println(it) })
-        CategoryProduct()
+        TopBar(
+            infoViewModel = infoViewModel,
+            navController = navController,
+            /*onSearch = { println(it) }*/
+        )
+        CategoryProduct(infoViewModel)
         LevelText(product = "Productos")
         ListProduct(navController, infoViewModel)
     }
@@ -89,17 +94,20 @@ private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewMo
 
 @Composable
 private fun TopBar(
+    infoViewModel: InfoViewModel,
     navController: NavHostController,
-    onSearch: (String) -> Unit,
+    //onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var text by remember { mutableStateOf("") }
+    var search by rememberSaveable { mutableStateOf("") }
+
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
 
         TextField(
-            value = text,
+            value = search,
             onValueChange = {
-                text = it
+                search = it
+                infoViewModel.onChangedQuery(it)
             },
             modifier = modifier
                 .weight(1f)
@@ -113,10 +121,23 @@ private fun TopBar(
             placeholder = {
                 Text("Search")
             },
+            trailingIcon = {
+                if (search.isNotEmpty()) {
+                    IconButton(onClick = { infoViewModel.onChangedQuery("") }) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close"
+                        )
+                    }
+                }
+            },
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { onSearch(text) })
+            keyboardActions = KeyboardActions(onSearch = {
+                //onSearch(search)
+                infoViewModel.searchProduct(search)
+            })
         )
 
         IconButton(
@@ -128,8 +149,7 @@ private fun TopBar(
         }
 
         DropdownButton(onSelectionChange = { selectedOption ->
-            // Acción a realizar al seleccionar una opción
-            println("Selected option: $selectedOption")
+            infoViewModel.filterProducts(selectedOption)
         })
     }
 }
@@ -167,17 +187,16 @@ fun DropdownButton(
 }
 
 @Composable
-private fun CategoryProduct() {
-    val options =
-        listOf("Limpiar Filtro", "Precio", "Descuento", "Categoria", "Stock", "Marca", "Rating")
-    if (options.isNotEmpty()) {
+private fun CategoryProduct(infoViewModel: InfoViewModel) {
+    val uiState by infoViewModel.uiState.collectAsState()
+    if (uiState.categories.isNotEmpty()) {
         LazyRow {
-            items(options) {
+            items(uiState.categories) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .clickable { },
+                        .clickable { infoViewModel.filterProducts(it) },
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -219,13 +238,13 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
     }
     if (uiState.error != null) {
         Snackbar {
-            Text(text = "Error o verifier connexion")
+            Text(text = "Error to verifier connexion")
         }
     }
     if (uiState.products.isNotEmpty()) {
         LazyVerticalGrid(columns = GridCells.Adaptive(150.dp)) {
             items(uiState.products) {
-                ItemProduct(it, navController)
+                ItemProduct(it, navController, infoViewModel)
             }
 
         }
@@ -235,7 +254,11 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
 }
 
 @Composable
-private fun ItemProduct(product: ProductModel, navController: NavHostController) {
+private fun ItemProduct(
+    product: ProductModel,
+    navController: NavHostController,
+    infoViewModel: InfoViewModel
+) {
     var showDialog by remember { mutableStateOf(false) }
 
     Card(
@@ -273,8 +296,13 @@ private fun ItemProduct(product: ProductModel, navController: NavHostController)
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val dataPrice = if (product.stock > 0) {
+                product.price
+            } else {
+                "Not stock"
+            }
 
-            Text(text = "$ ${product.price}", modifier = Modifier.wrapContentSize())
+            Text(text = "$ $dataPrice", modifier = Modifier.wrapContentSize())
             Text(text = " ${product.rating}", modifier = Modifier.wrapContentSize())
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -307,7 +335,7 @@ private fun ItemProduct(product: ProductModel, navController: NavHostController)
         DialogDelete(
             showDialog = showDialog,
             onConfirm = {
-                // Acción para eliminar el usuario
+                infoViewModel.deleteProductId(product.id.toString())
                 showDialog = false
             },
             onDismiss = { showDialog = false }

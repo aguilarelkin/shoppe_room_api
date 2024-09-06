@@ -21,6 +21,7 @@ class InfoViewModel @Inject constructor(private val productoRepository: ProductR
 
     init {
         getProducts()
+        getCategories()
     }
 
     fun onChangedQuery(query: String) {

@@ -14,10 +14,8 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
             return it.products.sortedByDescending { order ->
                 order.rating
             }.map { data ->
-                Log.i("Error Api", "Error: ${data}")
-                //Expectation
+                //Exection
                 data.toDomain()
-
             }
         }.onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
