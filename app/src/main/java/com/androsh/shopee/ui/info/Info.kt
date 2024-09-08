@@ -123,7 +123,10 @@ private fun TopBar(
             },
             trailingIcon = {
                 if (search.isNotEmpty()) {
-                    IconButton(onClick = { infoViewModel.onChangedQuery("") }) {
+                    IconButton(onClick = {
+                        infoViewModel.onChangedQuery("")
+                        search = ""
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close"
@@ -196,7 +199,7 @@ private fun CategoryProduct(infoViewModel: InfoViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .clickable { infoViewModel.filterProducts(it) },
+                        .clickable { /*infoViewModel.filterProducts(it)*/ },
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -205,7 +208,7 @@ private fun CategoryProduct(infoViewModel: InfoViewModel) {
                             .background(Brush.horizontalGradient(listOf(Color.White, Color.Cyan)))
                             .padding(16.dp)
                     ) {
-                        Text(text = it, color = Color.Black)
+                        Text(text = it.name, color = Color.Black)
                     }
                 }
 

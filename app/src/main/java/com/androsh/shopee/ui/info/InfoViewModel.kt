@@ -1,9 +1,12 @@
 package com.androsh.shopee.ui.info
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.androsh.shopee.domain.models.Category
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.domain.repository.ProductRepository
+import com.androsh.shopee.domain.repository.ProductRepositoryRoom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +16,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class InfoViewModel @Inject constructor(private val productoRepository: ProductRepository) :
+class InfoViewModel @Inject constructor(
+    private val productoRepository: ProductRepository,
+    private val productRepositoryRoom: ProductRepositoryRoom
+) :
     ViewModel() {
 
     private val _uiState = MutableStateFlow(InfoUiState())
@@ -28,7 +34,7 @@ class InfoViewModel @Inject constructor(private val productoRepository: ProductR
         _uiState.value = _uiState.value.copy(query = query)
     }
 
-    fun onChangedDelete() {
+    fun onChangedUiState() {
         _uiState.value = InfoUiState()
     }
 
@@ -37,6 +43,9 @@ class InfoViewModel @Inject constructor(private val productoRepository: ProductR
             _uiState.value = _uiState.value.copy(isLoading = true)
             val result = withContext(Dispatchers.IO) {
                 productoRepository.getProducts()
+            }
+            if (result.isNotEmpty()) {
+                productRepositoryRoom.addProducts(result)
             }
             _uiState.value = if (result.isNotEmpty()) {
                 _uiState.value.copy(products = result, isLoading = false)
@@ -53,7 +62,7 @@ class InfoViewModel @Inject constructor(private val productoRepository: ProductR
     fun getCategories() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            val result: List<String> = withContext(Dispatchers.IO) {
+            val result: List<Category> = withContext(Dispatchers.IO) {
                 productoRepository.getCategories()
             }
             _uiState.value = if (result.isNotEmpty()) {

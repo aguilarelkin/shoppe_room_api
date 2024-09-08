@@ -2,6 +2,7 @@ package com.androsh.shopee.data
 
 import android.util.Log
 import com.androsh.shopee.data.network.ProductApiService
+import com.androsh.shopee.domain.models.Category
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.domain.repository.ProductRepository
 import javax.inject.Inject
@@ -29,8 +30,10 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
         return ProductModel()
     }
 
-    override suspend fun getCategories(): List<String> {
-        runCatching { productApiService.getCategories() }.onSuccess { return it }
+    override suspend fun getCategories(): List<Category> {
+        runCatching { productApiService.getCategories() }.onSuccess { return it.map {
+            data -> data.toDomain()
+        } }
             .onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }

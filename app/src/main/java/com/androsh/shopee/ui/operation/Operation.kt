@@ -22,13 +22,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Operation(id: String? = null) {
-    if (id != null) {
-        if (id.isNotBlank()) {
-            DataOperation(id)
-        }
-    }else {
-        Log.i("TAG", "Operation: $id")
-    }
+    DataOperation(id)
 }
 
 @Composable

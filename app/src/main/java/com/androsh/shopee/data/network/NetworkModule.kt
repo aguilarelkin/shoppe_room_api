@@ -7,6 +7,7 @@ import com.androsh.shopee.data.RepositoryProuctRoomImpl
 import com.androsh.shopee.data.database.ProductDatabase
 import com.androsh.shopee.data.database.dao.DaoProduct
 import com.androsh.shopee.domain.repository.ProductRepository
+import com.androsh.shopee.domain.repository.ProductRepositoryRoom
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,8 +42,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder(). connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS)
+        return OkHttpClient.Builder().connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.MINUTES).writeTimeout(30, TimeUnit.MINUTES)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
     }
@@ -61,6 +62,15 @@ object NetworkModule {
     }
 
     /**
+     * Provide DDBB
+     */
+    @Singleton
+    @Provides
+    fun provideRoom(@ApplicationContext context: Context): ProductDatabase {
+        return Room.databaseBuilder(context, ProductDatabase::class.java, DATABASE_NAME).build()
+    }
+
+    /**
      * Dao product
      */
     @Singleton
@@ -73,16 +83,8 @@ object NetworkModule {
      * Return repository implementation
      */
     @Provides
-    fun provideRepositoryProduct(daoProduct: DaoProduct): RepositoryProuctRoomImpl {
+    fun provideRepositoryProduct(daoProduct: DaoProduct): ProductRepositoryRoom {
         return RepositoryProuctRoomImpl(daoProduct)
     }
 
-    /**
-     * Provide DDBB
-     */
-    @Singleton
-    @Provides
-    fun provideRoom(@ApplicationContext context: Context): ProductDatabase {
-        return Room.databaseBuilder(context, ProductDatabase::class.java, DATABASE_NAME).build()
-    }
 }

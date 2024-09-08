@@ -1,5 +1,6 @@
 package com.androsh.shopee.data.network
 
+import com.androsh.shopee.data.database.entities.CategoryDataRoom
 import com.androsh.shopee.data.response.ProductDataResponse
 import com.androsh.shopee.data.response.ProductResponse
 import com.androsh.shopee.domain.models.ProductModel
@@ -19,7 +20,7 @@ interface ProductApiService {
     suspend fun getProduct(@Path("id") id: String): ProductDataResponse
 
     @GET("/products/categories")
-    suspend fun getCategories(): List<String>
+    suspend fun getCategories(): List<CategoryDataRoom>
 
     @GET("/products/search")
     suspend fun searchProduct(@Query("q") data: String): ProductResponse
