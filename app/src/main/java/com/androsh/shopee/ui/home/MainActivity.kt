@@ -20,6 +20,8 @@ import androidx.navigation.navArgument
 import com.androsh.shopee.ui.description.DescriptionScreen
 import com.androsh.shopee.ui.info.Info
 import com.androsh.shopee.ui.info.InfoViewModel
+import com.androsh.shopee.ui.info.offline.InfoOffline
+import com.androsh.shopee.ui.info.offline.InfoViewModelOffline
 import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.operation.Operation
 import com.androsh.shopee.ui.theme.ShopeeTheme
@@ -53,6 +55,14 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
         composable(Route.Home.route) {
             val infoViewModel = hiltViewModel<InfoViewModel>()
             Info(navController, innerPadding, infoViewModel)
+        }
+        composable(Route.HomeOffline.route) {
+            val infoViewModelOffline = hiltViewModel<InfoViewModelOffline>()
+            InfoOffline(
+                navController = navController,
+                innerPadding = innerPadding,
+                infoViewModelOffline = infoViewModelOffline
+            )
         }
         composable(Route.OperationCreate.route) {
             Operation()

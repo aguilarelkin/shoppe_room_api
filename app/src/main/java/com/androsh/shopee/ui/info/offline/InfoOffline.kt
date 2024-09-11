@@ -1,4 +1,4 @@
-package com.androsh.shopee.ui.info
+package com.androsh.shopee.ui.info.offline
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -71,19 +72,23 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
+import com.androsh.shopee.ui.info.InfoViewModel
 import com.androsh.shopee.ui.navigation.Route
+import kotlinx.coroutines.launch
 
 @Composable
-fun Info(
+fun InfoOffline(
     navController: NavHostController,
     innerPadding: PaddingValues,
-    infoViewModel: InfoViewModel
+    infoViewModelOffline: InfoViewModelOffline
 ) {
     Box(modifier = Modifier.padding(innerPadding)) {
-        MainInfo(navController, infoViewModel)
+        Text(text = "Hola")
+//        MainInfo(navController, infoViewModel)
     }
 }
 
+/*
 //@Preview(showSystemUi = true)
 @Composable
 private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewModel) {
@@ -91,9 +96,11 @@ private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewMo
         TopBar(
             infoViewModel = infoViewModel,
             navController = navController,
-            /*onSearch = { println(it) }*/
+            */
+/*onSearch = { println(it) }*//*
+
         )
-        PageOffline(navController)
+        PageOffline(infoViewModel)
         CategoryProduct(infoViewModel)
         LevelText(product = "Productos")
         ListProduct(navController, infoViewModel)
@@ -207,7 +214,9 @@ private fun CategoryProduct(infoViewModel: InfoViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .clickable { /*infoViewModel.filterProducts(it)*/ },
+                        .clickable { */
+/*infoViewModel.filterProducts(it)*//*
+ },
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -346,7 +355,7 @@ private fun ItemProduct(
         DialogDelete(
             showDialog = showDialog,
             onConfirm = {
-                infoViewModel.it adeleteProductId(product.id.toString())
+                infoViewModel.deleteProductId(product.id.toString())
                 showDialog = false
             },
             onDismiss = { showDialog = false }
@@ -354,43 +363,34 @@ private fun ItemProduct(
     }
 }
 
-private fun ModOnline(navController: NavHostController) {
-    Log.i("Asdfasdfasdf", """""""""""""""""""""""")
-
-    navController.navigate(Route.Home.route)
-
-}
-
-private fun ModOffline(navController: NavHostController) {
-
-    navController.navigate(Route.HomeOffline.route)
+@Composable
+private fun modOnline(){
 
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun PageOffline(navController: NavHostController) {
+private fun PageOffline(infoViewModel: InfoViewModel) {
     val pageState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
-//
-//    HorizontalPager(  state = pageState) { page ->
-//        when (page) {
-//            0 -> ModOnline(navController)
-//            1 -> ModOffline(navController = navController)
-//        }
-//    }
+    HorizontalPager(state = pageState) { page ->
+        when (page) {
+            0 -> Log.i("aaaaaaaaaaaaaaaaaaaaaaaaaa", "asfa")
+            1 -> Log.i("56456+665+56", "adfasdf")
+        }
+    }
 
 
     Row(modifier = Modifier.fillMaxWidth()) {
         OutlinedButton(
             shape = RectangleShape,
             onClick = {
-//                scope.launch {
-//                    if (pageState.currentPage > 0) {
-//                        pageState.animateScrollToPage(pageState.currentPage - 1)
-//                    }
-//                }
-                ModOnline(navController)
+                scope.launch {
+                    if (pageState.currentPage > 0) {
+                        pageState.animateScrollToPage(pageState.currentPage - 1)
+                    }
+                }
+
 
             },
             enabled = pageState.currentPage > 0,
@@ -403,12 +403,12 @@ private fun PageOffline(navController: NavHostController) {
         OutlinedButton(
             shape = RectangleShape,
             onClick = {
-//                scope.launch {
-//                    if (pageState.currentPage < pageState.pageCount - 1) {
-//                        pageState.animateScrollToPage(pageState.currentPage + 1)
-//                    }
-//                }
-                ModOffline(navController)
+                scope.launch {
+                    if (pageState.currentPage < pageState.pageCount - 1) {
+                        pageState.animateScrollToPage(pageState.currentPage + 1)
+                    }
+                }
+
             },
             enabled = pageState.currentPage < pageState.pageCount - 1,
             modifier = Modifier
@@ -462,4 +462,4 @@ private fun startDescription(navController: NavHostController, product: String) 
     } catch (_: Exception) {
         println("errr")
     }
-}
+}*/

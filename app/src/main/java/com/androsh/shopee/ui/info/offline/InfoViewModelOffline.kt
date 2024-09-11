@@ -1,11 +1,11 @@
-package com.androsh.shopee.ui.info
+package com.androsh.shopee.ui.info.offline
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androsh.shopee.domain.models.Category
 import com.androsh.shopee.domain.models.ProductModel
-import com.androsh.shopee.domain.repository.ProductRepository
 import com.androsh.shopee.domain.repository.ProductRepositoryRoom
+import com.androsh.shopee.ui.info.InfoUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,10 +15,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class InfoViewModel @Inject constructor(
-    private val productoRepository: ProductRepository,
-    private val productRepositoryRoom: ProductRepositoryRoom
-) :
+class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom: ProductRepositoryRoom) :
     ViewModel() {
 
     private val _uiState = MutableStateFlow(InfoUiState())
@@ -41,10 +38,7 @@ class InfoViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             val result = withContext(Dispatchers.IO) {
-                productoRepository.getProducts()
-            }
-            if (result.isNotEmpty()) {
-                productRepositoryRoom.addProducts(result)
+                productRepositoryRoom.getProducts()
             }
             _uiState.value = if (result.isNotEmpty()) {
                 _uiState.value.copy(products = result, isLoading = false)
@@ -62,10 +56,7 @@ class InfoViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             val result: List<Category> = withContext(Dispatchers.IO) {
-                productoRepository.getCategories()
-            }
-            if (result.isNotEmpty()) {
-                productRepositoryRoom.addCategory(result)
+                productRepositoryRoom.getCategories()
             }
             _uiState.value = if (result.isNotEmpty()) {
                 _uiState.value.copy(categories = result, isLoading = false)
@@ -80,11 +71,11 @@ class InfoViewModel @Inject constructor(
     /**
      * Search product
      */
-    fun searchProduct(data: String) {
+    private fun searchProduct(data: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             val result: List<ProductModel> = withContext(Dispatchers.IO) {
-                productoRepository.searchProduct(data)
+                productRepositoryRoom.searchProduct(data)
             }
             _uiState.value = if (result.isNotEmpty()) {
                 _uiState.value.copy(products = result, isLoading = false)
@@ -98,13 +89,13 @@ class InfoViewModel @Inject constructor(
     /**
      * Delete product id
      */
-    fun deleteProductId(id: String) {
+    private fun deleteProductId(id: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            val result: ProductModel = withContext(Dispatchers.IO) {
-                productoRepository.deleteProduct(id)
+            val result: Boolean = withContext(Dispatchers.IO) {
+                productRepositoryRoom.deleteProduct(id)
             }
-            _uiState.value = if (result.title.isNotEmpty()) {
+            _uiState.value = if (result) {
                 _uiState.value.copy(
                     isProductDeleted = true,
                     products = emptyList(),
@@ -119,7 +110,7 @@ class InfoViewModel @Inject constructor(
     /**
      * Filter products of the list of productmodel
      */
-    fun filterProducts(filter: String) {
+    private fun filterProducts(filter: String) {
         _uiState.value = _uiState.value.copy(isLoading = true, isFiltering = true)
 
         val sortedProducts = when (filter) {
@@ -135,5 +126,4 @@ class InfoViewModel @Inject constructor(
         }
         _uiState.value = uiState.value.copy(products = sortedProducts, isFiltering = false)
     }
-
 }
