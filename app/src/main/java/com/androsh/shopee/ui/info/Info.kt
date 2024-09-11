@@ -1,5 +1,7 @@
 package com.androsh.shopee.ui.info
 
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,15 +9,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -45,6 +51,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -65,6 +72,7 @@ import coil.request.ImageRequest
 import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.ui.navigation.Route
+import kotlinx.coroutines.launch
 
 @Composable
 fun Info(
@@ -86,6 +94,8 @@ private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewMo
             navController = navController,
             /*onSearch = { println(it) }*/
         )
+        PageOffline()
+
         CategoryProduct(infoViewModel)
         LevelText(product = "Productos")
         ListProduct(navController, infoViewModel)
@@ -343,6 +353,51 @@ private fun ItemProduct(
             },
             onDismiss = { showDialog = false }
         )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PageOffline() {
+    val pageState = rememberPagerState(pageCount = { 2 })
+    val scope = rememberCoroutineScope()
+    HorizontalPager(state = pageState) { page ->
+        when (page) {
+            0 -> Log.i("aaaaaaaaaaaaaaaaaaaaaaaaaa", "asfa")
+            1 -> Log.i("56456+665+56", "adfasdf")
+        }
+    }
+
+
+    Row {
+        Button(
+            onClick = {
+                scope.launch {
+                    if (pageState.currentPage > 0) {
+                        pageState.animateScrollToPage(pageState.currentPage - 1)
+                    }
+                }
+
+
+            },
+            enabled = pageState.currentPage > 0 // Deshabilita el botón si es la primera página
+        ) {
+            Text("Anterior")
+        }
+        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre botones
+        Button(
+            onClick = {
+                scope.launch {
+                    if (pageState.currentPage < pageState.pageCount - 1) {
+                        pageState.animateScrollToPage(pageState.currentPage + 1)
+                    }
+                }
+
+            },
+            enabled = pageState.currentPage < pageState.pageCount - 1 // Deshabilita el botón si es la última página
+        ) {
+            Text("Siguiente")
+        }
     }
 }
 

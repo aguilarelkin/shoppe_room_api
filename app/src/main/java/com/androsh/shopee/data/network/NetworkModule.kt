@@ -2,6 +2,8 @@ package com.androsh.shopee.data.network
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.androsh.shopee.data.RepositoryProductImpl
 import com.androsh.shopee.data.RepositoryProuctRoomImpl
 import com.androsh.shopee.data.database.ProductDatabase
@@ -25,6 +27,25 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val DATABASE_NAME = "products"
+
+    private val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE category_new (id INTEGER NOT NULL, " + "name TEXT NOT NULL, " +
+                        "url TEXT NOT NULL, " +
+                        "PRIMARY KEY(id))"
+            )
+
+            // 2. Copiar los datos
+            database.execSQL("INSERT INTO category_new (id, name) SELECT id, title FROM category")
+
+            // 3. Eliminar la tabla original
+            database.execSQL("DROP TABLE category")
+
+            // 4. Renombrar la tabla temporal
+            database.execSQL("ALTER TABLE category_new RENAME TO category")
+        }
+    }
 
     /**
      * Provide Retrofit
@@ -67,7 +88,10 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): ProductDatabase {
-        return Room.databaseBuilder(context, ProductDatabase::class.java, DATABASE_NAME).build()
+        return Room.databaseBuilder(context, ProductDatabase::class.java, DATABASE_NAME)
+            .addMigrations(
+                MIGRATION_2_3
+            ).build()
     }
 
     /**

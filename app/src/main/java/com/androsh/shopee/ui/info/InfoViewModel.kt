@@ -1,6 +1,5 @@
 package com.androsh.shopee.ui.info
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androsh.shopee.domain.models.Category
@@ -64,6 +63,9 @@ class InfoViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
             val result: List<Category> = withContext(Dispatchers.IO) {
                 productoRepository.getCategories()
+            }
+            if (result.isNotEmpty()) {
+                productRepositoryRoom.addCategory(result)
             }
             _uiState.value = if (result.isNotEmpty()) {
                 _uiState.value.copy(categories = result, isLoading = false)
