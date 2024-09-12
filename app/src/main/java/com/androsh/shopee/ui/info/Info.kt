@@ -207,7 +207,7 @@ private fun CategoryProduct(infoViewModel: InfoViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .clickable { /*infoViewModel.filterProducts(it)*/ },
+                        .clickable { /*infoViewModel.filterProducts(it.name)*/ },
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -346,7 +346,7 @@ private fun ItemProduct(
         DialogDelete(
             showDialog = showDialog,
             onConfirm = {
-                infoViewModel.it adeleteProductId(product.id.toString())
+                infoViewModel.deleteProductId(product.id.toString())
                 showDialog = false
             },
             onDismiss = { showDialog = false }
@@ -355,10 +355,7 @@ private fun ItemProduct(
 }
 
 private fun ModOnline(navController: NavHostController) {
-    Log.i("Asdfasdfasdf", """""""""""""""""""""""")
-
     navController.navigate(Route.Home.route)
-
 }
 
 private fun ModOffline(navController: NavHostController) {

@@ -34,9 +34,9 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
         _uiState.value = InfoUiState()
     }
 
-    private fun getProducts() {
+    fun getProducts() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result = withContext(Dispatchers.IO) {
                 productRepositoryRoom.getProducts()
             }
@@ -71,9 +71,9 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
     /**
      * Search product
      */
-    private fun searchProduct(data: String) {
+    fun searchProduct(data: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result: List<ProductModel> = withContext(Dispatchers.IO) {
                 productRepositoryRoom.searchProduct(data)
             }
@@ -89,7 +89,7 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
     /**
      * Delete product id
      */
-    private fun deleteProductId(id: String) {
+    fun deleteProductId(id: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             val result: Boolean = withContext(Dispatchers.IO) {
@@ -110,7 +110,7 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
     /**
      * Filter products of the list of productmodel
      */
-    private fun filterProducts(filter: String) {
+    fun filterProducts(filter: String) {
         _uiState.value = _uiState.value.copy(isLoading = true, isFiltering = true)
 
         val sortedProducts = when (filter) {
