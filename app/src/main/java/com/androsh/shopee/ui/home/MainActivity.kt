@@ -26,6 +26,8 @@ import com.androsh.shopee.ui.info.offline.InfoViewModelOffline
 import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.operation.Operation
 import com.androsh.shopee.ui.operation.OperationViewModel
+import com.androsh.shopee.ui.operation.offline.OperationOffline
+import com.androsh.shopee.ui.operation.offline.OperationOfflineViewModel
 import com.androsh.shopee.ui.theme.ShopeeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,6 +56,9 @@ fun MainNavigation(innerPadding: PaddingValues) {
 fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
     val descriptionViewModel = hiltViewModel<DescriptionViewModel>()
     val operationViewModel: OperationViewModel = hiltViewModel<OperationViewModel>()
+    val operationOfflineViewModel: OperationOfflineViewModel =
+        hiltViewModel<OperationOfflineViewModel>()
+
 
     NavHost(navController = navController, startDestination = Route.Home.route) {
         composable(Route.Home.route) {
@@ -77,7 +82,6 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
         composable(route = Route.DescriptionOffline.route, arguments = listOf(
             navArgument("id") { type = NavType.StringType }
         )
-
         ) {
             DescriptionScreen(
                 navController,
@@ -94,6 +98,15 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
             type = NavType.StringType
         })) {
             Operation(operationViewModel, id = getArgument(it, "id"))
+        }
+
+        composable(Route.OperationOfflineCreate.route) {
+            OperationOffline(operationOfflineViewModel)
+        }
+        composable(route = Route.OperationOffline.route, arguments = listOf(navArgument("id") {
+            type = NavType.StringType
+        })) {
+            OperationOffline(operationOfflineViewModel, id = getArgument(it, "id"))
         }
     }
 }

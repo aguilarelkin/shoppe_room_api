@@ -154,7 +154,7 @@ private fun TopBar(
         )
 
         IconButton(
-            onClick = { navController.navigate(Route.OperationCreate.route) },
+            onClick = { navController.navigate(Route.OperationOfflineCreate.route) },
             modifier = Modifier
                 .padding(8.dp)
         ) {

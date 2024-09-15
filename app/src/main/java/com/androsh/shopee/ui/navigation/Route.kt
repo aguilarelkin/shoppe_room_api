@@ -6,6 +6,9 @@ sealed class Route(val route: String) {
 
     data object Operation : Route("operation/{id}")
     data object OperationCreate : Route("operation")
+    data object OperationOffline : Route("operation/{id}")
+    data object OperationOfflineCreate : Route("operation")
+
 
     data object Description : Route("description/{id}")
     data object DescriptionOffline : Route("description/{id}")

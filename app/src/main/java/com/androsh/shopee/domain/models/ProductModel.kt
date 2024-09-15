@@ -26,6 +26,7 @@ data class ProductModel(
         brand,
         category,
         thumbnail,
-       images.joinToString(separator = ",")
+        images.joinToString(separator = ",")
     )
+
 }

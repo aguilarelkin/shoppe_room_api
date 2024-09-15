@@ -22,7 +22,7 @@ interface DaoProduct {
     @Insert(entity = CategoryDataRoom::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun addCategory(title: List<CategoryDataRoom>): List<Long>
 
-    @Query("SELECT * FROM products WHERE title = :data")
+    @Query("SELECT * FROM products WHERE LOWER(title) LIKE '%' || LOWER(:data) || '%'")
     suspend fun searchProduct(data: String): List<ProductDataRoom>
 
     @Insert(entity = ProductDataRoom::class, onConflict = OnConflictStrategy.ABORT)
