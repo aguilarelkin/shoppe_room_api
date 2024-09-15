@@ -18,12 +18,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.androsh.shopee.ui.description.DescriptionScreen
+import com.androsh.shopee.ui.description.DescriptionViewModel
 import com.androsh.shopee.ui.info.Info
 import com.androsh.shopee.ui.info.InfoViewModel
 import com.androsh.shopee.ui.info.offline.InfoOffline
 import com.androsh.shopee.ui.info.offline.InfoViewModelOffline
 import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.operation.Operation
+import com.androsh.shopee.ui.operation.OperationViewModel
 import com.androsh.shopee.ui.theme.ShopeeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,6 +52,8 @@ fun MainNavigation(innerPadding: PaddingValues) {
 
 @Composable
 fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
+    val descriptionViewModel = hiltViewModel<DescriptionViewModel>()
+    val operationViewModel: OperationViewModel = hiltViewModel<OperationViewModel>()
 
     NavHost(navController = navController, startDestination = Route.Home.route) {
         composable(Route.Home.route) {
@@ -64,18 +68,32 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
                 infoViewModelOffline = infoViewModelOffline
             )
         }
-        composable(Route.OperationCreate.route) {
-            Operation()
-        }
+
         composable(route = Route.Description.route, arguments = listOf(navArgument("id") {
             type = NavType.StringType
         })) {
-            DescriptionScreen(navController, getArgument(it, "id"))
+            DescriptionScreen(navController, getArgument(it, "id"), false, descriptionViewModel)
+        }
+        composable(route = Route.DescriptionOffline.route, arguments = listOf(
+            navArgument("id") { type = NavType.StringType }
+        )
+
+        ) {
+            DescriptionScreen(
+                navController,
+                getArgument(it, "id")/*?.replace("{","")?.replace("}","")*/,
+                true,
+                descriptionViewModel
+            )
+        }
+
+        composable(Route.OperationCreate.route) {
+            Operation(operationViewModel)
         }
         composable(route = Route.Operation.route, arguments = listOf(navArgument("id") {
             type = NavType.StringType
         })) {
-            Operation(id = getArgument(it, "id"))
+            Operation(operationViewModel, id = getArgument(it, "id"))
         }
     }
 }

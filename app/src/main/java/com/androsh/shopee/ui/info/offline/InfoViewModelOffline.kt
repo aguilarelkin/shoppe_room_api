@@ -54,7 +54,7 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
      */
     private fun getCategories() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result: List<Category> = withContext(Dispatchers.IO) {
                 productRepositoryRoom.getCategories()
             }
@@ -124,6 +124,6 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
                 uiState.value.products.sortedByDescending { it.rating }
             }
         }
-        _uiState.value = uiState.value.copy(products = sortedProducts, isFiltering = false)
+        _uiState.value = uiState.value.copy(products = sortedProducts, isFiltering = false, isLoading = false)
     }
 }

@@ -1,4 +1,4 @@
-package com.androsh.shopee.ui.operation
+package com.androsh.shopee.ui.operation.offline
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Operation(operationViewModel: OperationViewModel, id: String? = null) {
+fun OperationOffline(operationViewModel: OperationOfflineViewModel, id: String? = null) {
     Log.i("aaaaaaaaaaaaaaaadfa65", id.toString())
     DataOperation(id)
 }

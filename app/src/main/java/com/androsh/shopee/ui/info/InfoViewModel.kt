@@ -39,7 +39,7 @@ class InfoViewModel @Inject constructor(
 
     private fun getProducts() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result = withContext(Dispatchers.IO) {
                 productoRepository.getProducts()
             }
@@ -60,7 +60,7 @@ class InfoViewModel @Inject constructor(
      */
     private fun getCategories() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result: List<Category> = withContext(Dispatchers.IO) {
                 productoRepository.getCategories()
             }
@@ -133,7 +133,8 @@ class InfoViewModel @Inject constructor(
                 uiState.value.products.sortedByDescending { it.rating }
             }
         }
-        _uiState.value = uiState.value.copy(products = sortedProducts, isFiltering = false)
+        _uiState.value =
+            uiState.value.copy(products = sortedProducts, isFiltering = false, isLoading = false)
     }
 
 }
