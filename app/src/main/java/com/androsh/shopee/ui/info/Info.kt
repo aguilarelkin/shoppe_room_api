@@ -359,9 +359,7 @@ private fun ModOnline(navController: NavHostController) {
 }
 
 private fun ModOffline(navController: NavHostController) {
-
     navController.navigate(Route.HomeOffline.route)
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)

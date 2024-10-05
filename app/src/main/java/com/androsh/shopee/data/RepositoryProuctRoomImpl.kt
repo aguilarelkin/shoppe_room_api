@@ -11,7 +11,7 @@ class RepositoryProuctRoomImpl @Inject constructor(private val daoProduct: DaoPr
     ProductRepositoryRoom {
     override suspend fun getProducts(): List<ProductModel> {
         runCatching { daoProduct.getAllProducts() }.onSuccess {
-            return it.map { data -> data.toDomain() }
+            return it.sortedByDescending { order -> order.rating }.map { data -> data.toDomain() }
         }.onFailure { Log.i("DDBB", "Error: ${it.message}") }
         return emptyList()
     }

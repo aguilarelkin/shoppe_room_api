@@ -19,9 +19,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
-fun Operation(operationViewModel: OperationViewModel, id: String? = null) {
+fun Operation(
+    operationViewModel: OperationViewModel,
+    id: String? = null,
+) {
     Log.i("aaaaaaaaaaaaaaaadfa65", id.toString())
     DataOperation(id)
 }

@@ -1,5 +1,6 @@
 package com.androsh.shopee.ui.operation.offline
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,24 +9,41 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.androsh.shopee.domain.models.ProductModel
 
 @Composable
-fun OperationOffline(operationViewModel: OperationOfflineViewModel, id: String? = null) {
-    DataOperation(id, operationViewModel)
+fun OperationOffline(
+    operationViewModel: OperationOfflineViewModel,
+    id: String? = null,
+    navController: NavHostController
+) {
+    DataOperation(id, operationViewModel, navController)
 }
 
 @Composable
-private fun DataOperation(id: String?, operationViewModel: OperationOfflineViewModel) {
+private fun DataOperation(
+    id: String?,
+    operationViewModel: OperationOfflineViewModel,
+    navController: NavHostController
+) {
+    val uiState by operationViewModel.uiState.collectAsState()
+
     data class ProductModels(
         var id: Int = 0,
         var title: String = "",
@@ -90,6 +108,7 @@ private fun DataOperation(id: String?, operationViewModel: OperationOfflineViewM
                 .padding(10.dp, vertical = 40.dp)
         ) {
             item {
+                val context = LocalContext.current
                 LevelText(data = "Title")
                 FieldName(dataValue = productData.value.title) {
                     productData.value = productData.value.copy(title = it)
@@ -125,11 +144,35 @@ private fun DataOperation(id: String?, operationViewModel: OperationOfflineViewM
                 FieldName(dataValue = productData.value.category) {
                     productData.value = productData.value.copy(category = it)
                 }
-
-                Button(onClick = {
-                    operation(id, productData.value, operationViewModel)
-                }) {
-                    Text(text = if (id == null) "Create" else "Update")
+                if (uiState.error != null) {
+                    Snackbar {
+                        Text(text = uiState.error.toString())
+                    }
+                }
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 4.dp
+                    )
+                } else {
+                    Button(onClick = {
+                        val isValid =
+                            productData.value.let { product -> product.title.isNotBlank() && product.description.isNotBlank() && product.price >= 0.0 && product.discountPercentage >= 0.0 && product.rating >= 0.0 && product.stock >= 0 && product.category.isNotBlank() }
+                        if (isValid) {
+                            operation(id, productData.value, operationViewModel)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Please fill in all required fields",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }) {
+                        Text(text = if (id == null) "Create" else "Update")
+                    }
+                }
+                if (uiState.isOperationSuccessResult) {
+                    navController.popBackStack()
                 }
             }
         }
