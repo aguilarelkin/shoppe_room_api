@@ -334,7 +334,7 @@ private fun ItemProduct(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             IconButton(onClick = {
                 navController.navigate(
-                    Route.Operation.route.replace(
+                    Route.OperationOffline.route.replace(
                         "{id}",
                         product.id.toString()
                     )

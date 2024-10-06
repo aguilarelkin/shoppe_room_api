@@ -37,7 +37,6 @@ class OperationOfflineViewModel @Inject constructor(
 
     init {
         _uiState.value = OperationUiState()
-        Log.d("OperationOfflineViewModel", "OperationOfflineViewModel created")
     }
 
     fun onChangedField(
@@ -79,6 +78,7 @@ class OperationOfflineViewModel @Inject constructor(
                 }
                 _uiState.value =
                     _uiState.value.copy(product = result, isLoading = false)
+                _productState.value = result
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message, isLoading = false)
             }

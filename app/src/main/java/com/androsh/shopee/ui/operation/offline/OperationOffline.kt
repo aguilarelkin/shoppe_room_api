@@ -1,5 +1,6 @@
 package com.androsh.shopee.ui.operation.offline
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,10 +16,11 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.ui.info.offline.InfoViewModelOffline
+import com.androsh.shopee.ui.operation.OperationUiState
+import com.androsh.shopee.ui.operation.ProductUtil.productSaver
 
 @Composable
 fun OperationOffline(
@@ -46,58 +50,7 @@ private fun DataOperation(
     infoViewModelOffline: InfoViewModelOffline
 ) {
     val uiState by operationViewModel.uiState.collectAsState()
-    if (uiState.isOperationSuccessResult) {
-        operationViewModel.initUiState()
-        infoViewModelOffline.onProductCreated()
-        successFull(navController)
-    }
-    data class ProductModels(
-        var id: Int = 0,
-        var title: String = "",
-        var description: String = "",
-        var price: Double = 0.0,
-        var discountPercentage: Double = 0.0,
-        var rating: Double = 0.0,
-        var stock: Int = 0,
-        var brand: String? = "",
-        var category: String = "",
-        var thumbnail: String = "",
-        var images: List<String> = emptyList()
-    )
-
-    val productSaver = Saver<ProductModel, Map<String, Any?>>(
-
-        save = { product ->
-            mapOf(
-                "id" to product.id,
-                "title" to product.title,
-                "description" to product.description,
-                "price" to product.price,
-                "discountPercentage" to product.discountPercentage,
-                "rating" to product.rating,
-                "stock" to product.stock,
-                "brand" to product.brand,
-                "category" to product.category,
-                "thumbnail" to product.thumbnail,
-                "images" to product.images
-            )
-        },
-        restore = { map ->
-            ProductModel(
-                id = map["id"] as Int,
-                title = map["title"] as String,
-                description = map["description"] as String,
-                price = map["price"] as Double,
-                discountPercentage = map["discountPercentage"] as Double,
-                rating = map["rating"] as Double,
-                stock = map["stock"] as Int,
-                brand = map["brand"] as String,
-                category = map["category"] as String,
-                thumbnail = map["thumbnail"] as String,
-                images = map["images"] as List<String>
-            )
-        }
-    )
+    val product by operationViewModel.producState.collectAsState()
     val productData = rememberSaveable(stateSaver = productSaver) {
         mutableStateOf(
             ProductModel(
@@ -106,7 +59,30 @@ private fun DataOperation(
             )
         )
     }
+    if (!id.isNullOrBlank()) {
+        LaunchedEffect(key1 = id) {
+            operationViewModel.searchProduct(id)
+        }
+        LaunchedEffect(key1 = product) {
+            productData.value = product
+        }
+    }
+    if (uiState.isOperationSuccessResult) {
+        operationViewModel.initUiState()
+        infoViewModelOffline.onProductCreated()
+        successFull(navController)
+    }
+    ProductFormContent(productData, uiState, operationViewModel, LocalContext.current, id)
+}
 
+@Composable
+private fun ProductFormContent(
+    productData: MutableState<ProductModel>,
+    uiState: OperationUiState,
+    operationViewModel: OperationOfflineViewModel,
+    current: Context,
+    id: String?
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
