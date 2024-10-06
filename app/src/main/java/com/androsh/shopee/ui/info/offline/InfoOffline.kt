@@ -1,6 +1,5 @@
 package com.androsh.shopee.ui.info.offline
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -202,6 +201,9 @@ fun DropdownButton(
 @Composable
 private fun CategoryProduct(infoViewModel: InfoViewModelOffline) {
     val uiState by infoViewModel.uiState.collectAsState()
+    if (uiState.isProductCreated) {
+        infoViewModel.getProducts()
+    }
     if (uiState.categories.isNotEmpty()) {
         LazyRow {
             items(uiState.categories) {
@@ -251,7 +253,9 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
             infoViewModel.getProducts()
         }
     */
-
+    if (uiState.isProductDeleted) {
+        infoViewModel.onChangedUiState()
+    }
     if (uiState.isLoading) {
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.primary,

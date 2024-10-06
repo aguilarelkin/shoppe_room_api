@@ -54,6 +54,8 @@ fun MainNavigation(innerPadding: PaddingValues) {
 
 @Composable
 fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
+    val infoViewModelOffline = hiltViewModel<InfoViewModelOffline>()
+
     val descriptionViewModel = hiltViewModel<DescriptionViewModel>()
     val operationViewModel: OperationViewModel = hiltViewModel<OperationViewModel>()
     val operationOfflineViewModel: OperationOfflineViewModel =
@@ -65,7 +67,6 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
             Info(navController, innerPadding, infoViewModel)
         }
         composable(Route.HomeOffline.route) {
-            val infoViewModelOffline = hiltViewModel<InfoViewModelOffline>()
             InfoOffline(
                 navController = navController,
                 innerPadding = innerPadding,
@@ -100,12 +101,20 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
         }
 
         composable(Route.OperationOfflineCreate.route) {
-            OperationOffline(operationOfflineViewModel, navController = navController)
+            OperationOffline(
+                operationOfflineViewModel, navController = navController,
+                infoViewModelOffline = infoViewModelOffline
+            )
         }
         composable(route = Route.OperationOffline.route, arguments = listOf(navArgument("id") {
             type = NavType.StringType
         })) {
-            OperationOffline(operationOfflineViewModel, id = getArgument(it, "id"), navController)
+            OperationOffline(
+                operationOfflineViewModel,
+                id = getArgument(it, "id"),
+                navController,
+                infoViewModelOffline
+            )
         }
     }
 }

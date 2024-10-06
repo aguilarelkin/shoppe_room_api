@@ -26,17 +26,23 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
         getCategories()
     }
 
+    fun onProductCreated() {
+        _uiState.value = _uiState.value.copy(isProductCreated = true)
+    }
+
     fun onChangedQuery(query: String) {
         _uiState.value = _uiState.value.copy(query = query)
     }
 
     fun onChangedUiState() {
         _uiState.value = InfoUiState()
+        getProducts()
     }
 
     fun getProducts() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value =
+                _uiState.value.copy(isLoading = true, error = null, isProductCreated = false)
             val result = withContext(Dispatchers.IO) {
                 productRepositoryRoom.getProducts()
             }
@@ -124,6 +130,7 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
                 uiState.value.products.sortedByDescending { it.rating }
             }
         }
-        _uiState.value = uiState.value.copy(products = sortedProducts, isFiltering = false, isLoading = false)
+        _uiState.value =
+            uiState.value.copy(products = sortedProducts, isFiltering = false, isLoading = false)
     }
 }

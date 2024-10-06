@@ -10,5 +10,6 @@ data class InfoUiState(
     val isFiltering: Boolean = false,
     val isProductDeleted: Boolean = false,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isProductCreated:Boolean = false
 )

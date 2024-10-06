@@ -26,24 +26,31 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.androsh.shopee.domain.models.ProductModel
+import com.androsh.shopee.ui.info.offline.InfoViewModelOffline
 
 @Composable
 fun OperationOffline(
     operationViewModel: OperationOfflineViewModel,
     id: String? = null,
-    navController: NavHostController
+    navController: NavHostController,
+    infoViewModelOffline: InfoViewModelOffline
 ) {
-    DataOperation(id, operationViewModel, navController)
+    DataOperation(id, operationViewModel, navController, infoViewModelOffline)
 }
 
 @Composable
 private fun DataOperation(
     id: String?,
     operationViewModel: OperationOfflineViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    infoViewModelOffline: InfoViewModelOffline
 ) {
     val uiState by operationViewModel.uiState.collectAsState()
-
+    if (uiState.isOperationSuccessResult) {
+        operationViewModel.initUiState()
+        infoViewModelOffline.onProductCreated()
+        successFull(navController)
+    }
     data class ProductModels(
         var id: Int = 0,
         var title: String = "",
@@ -171,12 +178,20 @@ private fun DataOperation(
                         Text(text = if (id == null) "Create" else "Update")
                     }
                 }
-                if (uiState.isOperationSuccessResult) {
-                    navController.popBackStack()
-                }
+
+                /*                LaunchedEffect(uiState.isOperationSuccessResult) {
+                                    if (uiState.isOperationSuccessResult) {
+                                        navController.popBackStack()
+                                    }
+                                }*/
+
             }
         }
     }
+}
+
+private fun successFull(navController: NavHostController) {
+    navController.popBackStack()
 }
 
 @Composable

@@ -1,14 +1,16 @@
 package com.androsh.shopee.ui.operation.offline
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.domain.repository.ProductRepositoryRoom
+import com.androsh.shopee.ui.info.InfoUiState
 import com.androsh.shopee.ui.operation.OperationResult
 import com.androsh.shopee.ui.operation.OperationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -28,6 +30,14 @@ class OperationOfflineViewModel @Inject constructor(
 
     fun initState() {
         _uiState.value = _uiState.value.copy(updateCreate = false)
+    }
+    fun initUiState() {
+        _uiState.value = OperationUiState()
+    }
+
+    init {
+        _uiState.value = OperationUiState()
+        Log.d("OperationOfflineViewModel", "OperationOfflineViewModel created")
     }
 
     fun onChangedField(
