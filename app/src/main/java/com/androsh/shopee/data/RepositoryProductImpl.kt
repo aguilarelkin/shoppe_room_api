@@ -31,9 +31,11 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
     }
 
     override suspend fun getCategories(): List<Category> {
-        runCatching { productApiService.getCategories() }.onSuccess { return it.map {
-            data -> data.toDomain()
-        } }
+        runCatching { productApiService.getCategories() }.onSuccess {
+            return it.map { data ->
+                data.toDomain()
+            }
+        }
             .onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
@@ -50,19 +52,26 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
     }
 
     override suspend fun addProduct(productModel: ProductModel): List<String> {
-        runCatching { productApiService.addProduct(productModel) }.onSuccess { return it }
+        runCatching { productApiService.addProduct(productModel) }.onSuccess {
+            Log.i("aaaaaaaaaaaaaaaaaaaaaaaaaaaa", it.toString())
+            return it
+        }
             .onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
 
     override suspend fun updateProduct(productModel: ProductModel, id: String): List<String> {
-        runCatching { productApiService.updateProduct(productModel, id) }.onSuccess { return it }
+        runCatching { productApiService.updateProduct(productModel, id) }.onSuccess {
+            Log.i("aaaaaaaaaaaaaaaaaaaaaaaaaaaa", it.toString())
+            return it
+        }
             .onFailure { Log.i("Error Api", "Error: ${it}") }
         return emptyList()
     }
 
     override suspend fun deleteProduct(id: String): ProductModel {
         runCatching { productApiService.deleteProduct(id) }.onSuccess {
+            Log.i("aaaaaaaaaaaaaaaaaaaaaaaaaaaa", it.toDomain().toString())
             return it.toDomain()
         }
             .onFailure { Log.i("Error Api", "Error: ${it}") }

@@ -28,7 +28,7 @@ interface ProductApiService {
     @POST("/products/add")
     suspend fun addProduct(@Body productModel: ProductModel): List<String>
 
-    @PUT("/products/products/{id}")
+    @PUT("/products/{id}")
     suspend fun updateProduct(
         @Body productModel: ProductModel,
         @Path("id") id: String

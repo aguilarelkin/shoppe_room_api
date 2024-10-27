@@ -18,8 +18,7 @@ import javax.inject.Inject
 class InfoViewModel @Inject constructor(
     private val productoRepository: ProductRepository,
     private val productRepositoryRoom: ProductRepositoryRoom
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InfoUiState())
     val uiState: StateFlow<InfoUiState> = _uiState
@@ -27,6 +26,10 @@ class InfoViewModel @Inject constructor(
     init {
         getProducts()
         getCategories()
+    }
+
+    fun onProductCreated() {
+        _uiState.value = _uiState.value.copy(isProductCreated = true)
     }
 
     fun onChangedQuery(query: String) {
@@ -37,9 +40,10 @@ class InfoViewModel @Inject constructor(
         _uiState.value = InfoUiState()
     }
 
-    private fun getProducts() {
+    fun getProducts() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value =
+                _uiState.value.copy(isLoading = true, error = null, isProductCreated = false)
             val result = withContext(Dispatchers.IO) {
                 productoRepository.getProducts()
             }

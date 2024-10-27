@@ -200,6 +200,9 @@ fun DropdownButton(
 @Composable
 private fun CategoryProduct(infoViewModel: InfoViewModel) {
     val uiState by infoViewModel.uiState.collectAsState()
+    if (uiState.isProductCreated) {
+        infoViewModel.getProducts()
+    }
     if (uiState.categories.isNotEmpty()) {
         LazyRow {
             items(uiState.categories) {
