@@ -87,7 +87,7 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
                 _uiState.value.copy(products = result, isLoading = false)
 
             } else {
-                _uiState.value.copy(error = "Error", isLoading = false)
+                _uiState.value.copy(error = null, isLoading = false, products = result)
             }
         }
     }

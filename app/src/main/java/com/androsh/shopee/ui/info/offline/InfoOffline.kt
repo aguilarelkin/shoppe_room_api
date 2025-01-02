@@ -267,6 +267,11 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
             Text(text = "Error to verifier connexion")
         }
     }
+    if (uiState.error == null && uiState.products.isEmpty()) {
+        Snackbar {
+            Text(text = "No existe productos")
+        }
+    }
     if (uiState.products.isNotEmpty()) {
         LazyVerticalGrid(columns = GridCells.Adaptive(150.dp)) {
             items(uiState.products) {
