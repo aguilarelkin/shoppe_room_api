@@ -57,7 +57,6 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
     }
 
     override suspend fun updateProduct(productModel: ProductModel, id: String): ProductModel {
-        Log.i("11aaaaaaaaaaa", productModel.toString())
         runCatching { productApiService.updateProduct(productModel, id) }.onSuccess {
             Log.i("11aaaaaaaaaaaaaaaaaaaaaaaaaaaa", it.toString())
             return it
@@ -67,7 +66,6 @@ class RepositoryProductImpl @Inject constructor(private val productApiService: P
 
     override suspend fun deleteProduct(id: String): ProductModel {
         runCatching { productApiService.deleteProduct(id) }.onSuccess {
-            Log.i("aaaaaaaaaaaaaaaaaaaaaaaaaaaa", it.toDomain().toString())
             return it.toDomain()
         }.onFailure { Log.i("Error Api", "Error: ${it}") }
         return ProductModel()

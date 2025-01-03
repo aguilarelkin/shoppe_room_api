@@ -245,7 +245,6 @@ private fun LevelText(product: String) {
 fun DeleteProduct(infoViewModel: InfoViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState by infoViewModel.uiState.collectAsState()
-
     LaunchedEffect(uiState.isProductDeleted) {
         if (uiState.isProductDeleted) {
             snackbarHostState.showSnackbar(
@@ -365,10 +364,15 @@ private fun ItemProduct(
             }
         }
     }
+    val uiState by infoViewModel.uiState.collectAsState()
+
+
     if (showDialog) {
         DialogDelete(showDialog = showDialog, onConfirm = {
             infoViewModel.deleteProductId(product.id.toString())
-            showDialog = false
+            if (uiState.isProductDeleted) {
+                showDialog = false
+            }
         }, onDismiss = { showDialog = false })
     }
 }
@@ -448,9 +452,13 @@ fun TextData(info: String, size: TextUnit) {
 
 @Composable
 private fun DialogDelete(showDialog: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    var enabledButton by rememberSaveable { mutableStateOf(true) }
     if (showDialog) {
         AlertDialog(onDismissRequest = { onDismiss() }, confirmButton = {
-            Button(onClick = { onConfirm() }) {
+            Button(onClick = {
+                onConfirm()
+                enabledButton = !enabledButton
+            }, enabled = enabledButton) {
                 Text(text = "Delete")
             }
         }, title = {
@@ -458,7 +466,7 @@ private fun DialogDelete(showDialog: Boolean, onConfirm: () -> Unit, onDismiss: 
         }, text = {
             Text(text = "¿Estás seguro de eliminar el producto?")
         }, dismissButton = {
-            Button(onClick = { onDismiss() }) {
+            Button(onClick = { onDismiss() }, enabled = enabledButton) {
                 Text(text = "Cancel")
             }
         })

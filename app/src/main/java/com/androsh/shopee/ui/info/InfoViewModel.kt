@@ -38,6 +38,7 @@ class InfoViewModel @Inject constructor(
 
     fun onChangedUiState() {
         _uiState.value = InfoUiState()
+        getProducts()
     }
 
     fun getProducts() {
