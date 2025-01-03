@@ -305,8 +305,6 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
 
         }
     }
-
-
 }
 
 @Composable

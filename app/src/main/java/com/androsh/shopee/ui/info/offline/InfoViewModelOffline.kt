@@ -103,9 +103,7 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
             }
             _uiState.value = if (result) {
                 _uiState.value.copy(
-                    isProductDeleted = true,
-                    products = emptyList(),
-                    isLoading = false
+                    isProductDeleted = true, products = emptyList(), isLoading = false
                 )
             } else {
                 _uiState.value.copy(error = "Error", isLoading = false)

@@ -86,7 +86,7 @@ class InfoViewModel @Inject constructor(
      */
     fun searchProduct(data: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result: List<ProductModel> = withContext(Dispatchers.IO) {
                 productoRepository.searchProduct(data)
             }
@@ -94,7 +94,7 @@ class InfoViewModel @Inject constructor(
                 _uiState.value.copy(products = result, isLoading = false)
 
             } else {
-                _uiState.value.copy(error = "Error", isLoading = false)
+                _uiState.value.copy(error = null, isLoading = false, products = result)
             }
         }
     }
@@ -110,9 +110,7 @@ class InfoViewModel @Inject constructor(
             }
             _uiState.value = if (result.title.isNotEmpty()) {
                 _uiState.value.copy(
-                    isProductDeleted = true,
-                    products = emptyList(),
-                    isLoading = false
+                    isProductDeleted = true, products = emptyList(), isLoading = false
                 )
             } else {
                 _uiState.value.copy(error = "Error", isLoading = false)
