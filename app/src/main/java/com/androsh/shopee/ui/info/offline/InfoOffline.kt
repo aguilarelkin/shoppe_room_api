@@ -40,10 +40,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -102,8 +106,7 @@ private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewMo
 
 @Composable
 private fun TopBar(
-    infoViewModel: InfoViewModelOffline,
-    navController: NavHostController,
+    infoViewModel: InfoViewModelOffline, navController: NavHostController,
     //onSearch: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -122,8 +125,7 @@ private fun TopBar(
                 .padding(8.dp),
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
+                    imageVector = Icons.Default.Search, contentDescription = "Search"
                 )
             },
             placeholder = {
@@ -137,8 +139,7 @@ private fun TopBar(
                         search = ""
                     }) {
                         Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Close"
+                            imageVector = Icons.Default.Close, contentDescription = "Close"
                         )
                     }
                 }
@@ -154,8 +155,7 @@ private fun TopBar(
 
         IconButton(
             onClick = { navController.navigate(Route.OperationOfflineCreate.route) },
-            modifier = Modifier
-                .padding(8.dp)
+            modifier = Modifier.padding(8.dp)
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = "Add", tint = Color.Blue)
         }
@@ -183,10 +183,7 @@ fun DropdownButton(
                 tint = Color.Blue
             )
         }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEach { selectionOption ->
                 DropdownMenuItem(text = { Text(selectionOption) }, onClick = {
                     selectedOptionText = selectionOption
@@ -219,7 +216,13 @@ private fun CategoryProduct(infoViewModel: InfoViewModelOffline) {
                 ) {
                     Box(
                         modifier = Modifier
-                            .background(Brush.horizontalGradient(listOf(Color.White, Color.Cyan)))
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(
+                                        Color.White, Color.Cyan
+                                    )
+                                )
+                            )
                             .padding(16.dp)
                     ) {
                         Text(text = it.name, color = Color.Black)
@@ -236,11 +239,33 @@ private fun CategoryProduct(infoViewModel: InfoViewModelOffline) {
 private fun LevelText(product: String) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = product,
-            modifier = Modifier
+            text = product, modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.Center)
         )
+    }
+}
+
+@Composable
+fun DeleteProduct(infoViewModel: InfoViewModelOffline) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val uiState by infoViewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.isProductDeleted) {
+        if (uiState.isProductDeleted) {
+            snackbarHostState.showSnackbar(
+                message = "Producto eliminado correctamente"
+            )
+            infoViewModel.onChangedUiState()
+        }
+    }
+    Scaffold(snackbarHost = {
+        SnackbarHost(hostState = snackbarHostState)
+    }) {
+        Box(modifier = Modifier.padding(it)) {
+            CircularProgressIndicator()
+        }
+
     }
 }
 
@@ -254,12 +279,12 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
         }
     */
     if (uiState.isProductDeleted) {
-        infoViewModel.onChangedUiState()
+        DeleteProduct(infoViewModel)
+        //  infoViewModel.onChangedUiState()
     }
     if (uiState.isLoading) {
         CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 4.dp
+            color = MaterialTheme.colorScheme.primary, strokeWidth = 4.dp
         )
     }
     if (uiState.error != null) {
@@ -286,9 +311,7 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
 
 @Composable
 private fun ItemProduct(
-    product: ProductModel,
-    navController: NavHostController,
-    infoViewModel: InfoViewModelOffline
+    product: ProductModel, navController: NavHostController, infoViewModel: InfoViewModelOffline
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -303,9 +326,7 @@ private fun ItemProduct(
         Box(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(product.images.first())
-                    .crossfade(true)
-                    .placeholder(R.drawable.app)
+                    .data(product.images.first()).crossfade(true).placeholder(R.drawable.app)
                     .build(),
                 contentDescription = "image",
 
@@ -324,8 +345,7 @@ private fun ItemProduct(
         Divider()
         TextData(info = product.category, size = 18.sp)
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val dataPrice = if (product.stock > 0) {
                 product.price
@@ -336,19 +356,18 @@ private fun ItemProduct(
             Text(text = "$ $dataPrice", modifier = Modifier.wrapContentSize())
             Text(text = " ${product.rating}", modifier = Modifier.wrapContentSize())
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             IconButton(onClick = {
                 navController.navigate(
                     Route.OperationOffline.route.replace(
-                        "{id}",
-                        product.id.toString()
+                        "{id}", product.id.toString()
                     )
                 )
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = "Edit",
-                    tint = Color.Blue
+                    imageVector = Icons.Filled.Edit, contentDescription = "Edit", tint = Color.Blue
                 )
             }
             IconButton(onClick = {
@@ -363,14 +382,10 @@ private fun ItemProduct(
         }
     }
     if (showDialog) {
-        DialogDelete(
-            showDialog = showDialog,
-            onConfirm = {
-                infoViewModel.deleteProductId(product.id.toString())
-                showDialog = false
-            },
-            onDismiss = { showDialog = false }
-        )
+        DialogDelete(showDialog = showDialog, onConfirm = {
+            infoViewModel.deleteProductId(product.id.toString())
+            showDialog = false
+        }, onDismiss = { showDialog = false })
     }
 }
 
@@ -443,7 +458,8 @@ fun TextData(info: String, size: TextUnit) {
         fontSize = size,
         fontStyle = FontStyle.Normal,
         modifier = Modifier.padding(2.dp),
-        text = info, softWrap = false,
+        text = info,
+        softWrap = false,
         overflow = TextOverflow.Ellipsis
     )
 }
@@ -451,25 +467,19 @@ fun TextData(info: String, size: TextUnit) {
 @Composable
 private fun DialogDelete(showDialog: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { onDismiss() },
-            confirmButton = {
-                Button(onClick = { onConfirm() }) {
-                    Text(text = "Delete")
-                }
-            },
-            title = {
-                Text(text = "Delete product")
-            },
-            text = {
-                Text(text = "¿Estás seguro de eliminar el producto?")
-            },
-            dismissButton = {
-                Button(onClick = { onDismiss() }) {
-                    Text(text = "Cancel")
-                }
+        AlertDialog(onDismissRequest = { onDismiss() }, confirmButton = {
+            Button(onClick = { onConfirm() }) {
+                Text(text = "Delete")
             }
-        )
+        }, title = {
+            Text(text = "Delete product")
+        }, text = {
+            Text(text = "¿Estás seguro de eliminar el producto?")
+        }, dismissButton = {
+            Button(onClick = { onDismiss() }) {
+                Text(text = "Cancel")
+            }
+        })
     }
 }
 
