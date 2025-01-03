@@ -24,7 +24,7 @@ class OperationViewModel @Inject constructor(
     val uiState: StateFlow<OperationUiState> = _uiState
 
     fun initState() {
-        _uiState.value = _uiState.value.copy(updateCreate = false)
+        _uiState.value = _uiState.value.copy(create = false, update = false)
     }
 
     fun initUiState() {

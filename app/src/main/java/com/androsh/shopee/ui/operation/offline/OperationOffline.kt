@@ -1,29 +1,20 @@
 package com.androsh.shopee.ui.operation.offline
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
@@ -40,7 +31,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -87,10 +77,11 @@ private fun DataOperation(
     if (uiState.isOperationSuccessResult) {
         operationViewModel.initUiState()
         infoViewModelOffline.onProductCreated()
-        successFull(navController)
+        SuccessFull(navController, uiState.create)
     }
     ProductFormContent(productData, uiState, operationViewModel, LocalContext.current, id)
 }
+
 
 @Composable
 private fun ProductFormContent(
@@ -148,26 +139,22 @@ private fun ProductFormContent(
                     productData.value = productData.value.copy(stock = validInt(it))
                 }
                 LevelText(data = "Brand")
-                ListDropdown(
-                    info = "Brand",
+                ListDropdown(info = "Brand",
                     categories = categories,
                     selectedCategory = productData.value.brand
                         ?: "", // Si `brand` es null, se usa un string vacío
                     onCategorySelected = { data ->
                         productData.value = productData.value.copy(brand = data)
-                    }
-                )
+                    })
 
 
                 LevelText(data = "Category")
-                ListDropdown(
-                    info = "Category",
+                ListDropdown(info = "Category",
                     categories = categories,
                     selectedCategory = productData.value.category,
                     onCategorySelected = { newCategory ->
                         productData.value = productData.value.copy(category = newCategory)
-                    }
-                )
+                    })
 
 
                 if (uiState.error != null) {
@@ -177,8 +164,7 @@ private fun ProductFormContent(
                 }
                 if (uiState.isLoading) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 4.dp
+                        color = MaterialTheme.colorScheme.primary, strokeWidth = 4.dp
                     )
                 } else {
                     Button(onClick = {
@@ -189,7 +175,7 @@ private fun ProductFormContent(
                         } else {
                             Toast.makeText(
                                 context,
-                                "Please fill in all required fields",
+                                "¡Por favor, completa todos los campos necesarios!",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -223,43 +209,50 @@ fun ListDropdown(
     LaunchedEffect(key1 = selectedCategory) {
         text = selectedCategory
     }
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        OutlinedTextField(
-            value = text,
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+        OutlinedTextField(value = text,
             onValueChange = {},
             readOnly = true,
             label = { Text(info) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
-            modifier = Modifier
-                .menuAnchor()
+            modifier = Modifier.menuAnchor()
         )
 
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             categories.forEach { category ->
-                DropdownMenuItem(
-                    text = { Text(text = category) },
-                    onClick = {
-                        text = category
-                        onCategorySelected(category)
-                        expanded = false
-                    }
-                )
+                DropdownMenuItem(text = { Text(text = category) }, onClick = {
+                    text = category
+                    onCategorySelected(category)
+                    expanded = false
+                })
             }
         }
     }
 }
 
-private fun successFull(navController: NavHostController) {
+
+@Composable
+private fun SuccessFull(navController: NavHostController, create: Boolean) {
+    // Estado para el Toast
+    val context = LocalContext.current
+
+    // Mostrar el Toast en base al valor de isSuccess
+    LaunchedEffect(create) {
+        // Condicional para el mensaje
+        val message = if (create) {
+            "¡Producto creado exitosamente!"
+        } else {
+            "¡Producto actualizado exitosamente!"
+        }
+
+        // Mostrar el Toast
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
     navController.popBackStack()
 }
+
 
 @Composable
 private fun LevelText(data: String) {
@@ -270,8 +263,7 @@ private fun LevelText(data: String) {
 }
 
 @Composable
-private fun FieldName(dataValue: String, dataOnChange: (String) -> Unit) {
-    /*    val onValueChangeRemembered = remember {
+private fun FieldName(dataValue: String, dataOnChange: (String) -> Unit) {/*    val onValueChangeRemembered = remember {
             { text: String ->
                 val newValue = when (T::class) {
                     String::class -> text

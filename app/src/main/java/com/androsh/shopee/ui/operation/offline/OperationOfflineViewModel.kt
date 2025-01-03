@@ -26,7 +26,7 @@ class OperationOfflineViewModel @Inject constructor(
     val uiState: StateFlow<OperationUiState> = _uiState
 
     fun initState() {
-        _uiState.value = _uiState.value.copy(updateCreate = false)
+        _uiState.value = _uiState.value.copy(create = false, update = false)
     }
 
     fun initUiState() {
@@ -74,8 +74,7 @@ class OperationOfflineViewModel @Inject constructor(
                 val result: ProductModel = withContext(Dispatchers.IO) {
                     productRepositoryRoom.getProduct(id)
                 }
-                _uiState.value =
-                    _uiState.value.copy(product = result, isLoading = false)
+                _uiState.value = _uiState.value.copy(product = result, isLoading = false)
                 _productState.value = result
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message, isLoading = false)
@@ -96,13 +95,12 @@ class OperationOfflineViewModel @Inject constructor(
             }
             _uiState.value = when (result) {
                 is OperationResult.Error -> _uiState.value.copy(
-                    error = result.message,
-                    isLoading = false
+                    error = result.message, isLoading = false
                 )
 
                 is OperationResult.Success -> _uiState.value.copy(
-                    isOperationSuccessResult = true,
-                    isLoading = false
+                    create = true,
+                    isOperationSuccessResult = true, isLoading = false
                 )
             }
         }
@@ -121,13 +119,12 @@ class OperationOfflineViewModel @Inject constructor(
             }
             _uiState.value = when (result) {
                 is OperationResult.Error -> _uiState.value.copy(
-                    error = result.message,
-                    isLoading = false
+                    error = result.message, isLoading = false
                 )
 
                 is OperationResult.Success -> _uiState.value.copy(
-                    isOperationSuccessResult = true,
-                    isLoading = false
+                    update = true,
+                    isOperationSuccessResult = true, isLoading = false
                 )
             }
         }
