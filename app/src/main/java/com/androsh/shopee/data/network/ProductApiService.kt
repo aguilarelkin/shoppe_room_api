@@ -26,13 +26,13 @@ interface ProductApiService {
     suspend fun searchProduct(@Query("q") data: String): ProductResponse
 
     @POST("/products/add")
-    suspend fun addProduct(@Body productModel: ProductModel): List<String>
+    suspend fun addProduct(@Body productModel: ProductModel): ProductModel
 
     @PUT("/products/{id}")
     suspend fun updateProduct(
         @Body productModel: ProductModel,
         @Path("id") id: String
-    ): List<String>
+    ): ProductModel
 
     @DELETE("/products/{id}")
     suspend fun deleteProduct(@Path("id") id: String): ProductDataResponse

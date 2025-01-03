@@ -82,8 +82,6 @@ class OperationViewModel @Inject constructor(
     }
 
     fun addProduct(product: ProductModel) {
-        Log.i("aaaaaaaaaaaaaa34aaaaaaaaaaaaaaa", product.toString())
-
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             val result: OperationResult = withContext(Dispatchers.IO) {
@@ -101,6 +99,7 @@ class OperationViewModel @Inject constructor(
                 )
 
                 is OperationResult.Success -> _uiState.value.copy(
+                    create = true,
                     isOperationSuccessResult = true,
                     isLoading = false
                 )
@@ -126,6 +125,7 @@ class OperationViewModel @Inject constructor(
                 )
 
                 is OperationResult.Success -> _uiState.value.copy(
+                    update = true,
                     isOperationSuccessResult = true,
                     isLoading = false
                 )

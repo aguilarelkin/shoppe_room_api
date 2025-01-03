@@ -235,19 +235,14 @@ fun ListDropdown(
 
 @Composable
 private fun SuccessFull(navController: NavHostController, create: Boolean) {
-    // Estado para el Toast
     val context = LocalContext.current
 
-    // Mostrar el Toast en base al valor de isSuccess
     LaunchedEffect(create) {
-        // Condicional para el mensaje
         val message = if (create) {
             "¡Producto creado exitosamente!"
         } else {
             "¡Producto actualizado exitosamente!"
         }
-
-        // Mostrar el Toast
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
     navController.popBackStack()

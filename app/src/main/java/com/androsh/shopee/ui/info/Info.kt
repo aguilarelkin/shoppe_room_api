@@ -96,7 +96,7 @@ private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewMo
         )
         PageOffline(navController)
         CategoryProduct(infoViewModel)
-        LevelText(product = "Productos")
+        LevelText(product = "Productoss")
         ListProduct(navController, infoViewModel)
     }
 }
@@ -154,7 +154,7 @@ private fun TopBar(
             onClick = { navController.navigate(Route.OperationCreate.route) },
             modifier = Modifier.padding(8.dp)
         ) {
-            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add", tint = Color.Blue)
+            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add", tint = Color.Red)
         }
 
         DropdownButton(onSelectionChange = { selectedOption ->
