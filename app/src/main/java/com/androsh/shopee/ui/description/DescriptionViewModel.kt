@@ -1,5 +1,6 @@
 package com.androsh.shopee.ui.description
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androsh.shopee.domain.models.ProductModel
@@ -29,10 +30,14 @@ class DescriptionViewModel @Inject constructor(
      */
     fun getProductId(id: String) {
         viewModelScope.launch {
-            val result: ProductModel = withContext(Dispatchers.IO) {
-                productRepository.getProduct(id)
+            try {
+                val result: ProductModel = withContext(Dispatchers.IO) {
+                    productRepository.getProduct(id)
+                }
+                _stateProduct.value = result
+            } catch (e: Exception) {
+                Log.e("getProductId", "Error al obtener producto: ${e.message}")
             }
-            _stateProduct.value = result
         }
     }
 

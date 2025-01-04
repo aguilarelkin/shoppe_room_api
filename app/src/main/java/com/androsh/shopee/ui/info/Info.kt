@@ -1,5 +1,6 @@
 package com.androsh.shopee.ui.info
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -475,7 +476,7 @@ private fun DialogDelete(showDialog: Boolean, onConfirm: () -> Unit, onDismiss: 
 
 private fun startDescription(navController: NavHostController, product: String) {
     try {
-        navController.navigate(Route.Description.route.replace("id", product))
+        navController.navigate(Route.Description.route.replace("{id}", product))
     } catch (_: Exception) {
         println("errr")
     }

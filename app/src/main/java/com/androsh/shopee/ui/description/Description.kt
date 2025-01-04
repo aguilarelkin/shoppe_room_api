@@ -79,7 +79,7 @@ private fun DescriptionCard(descriptionViewModel: DescriptionViewModel) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             AsyncImage(
                                 model = ImageRequest.Builder(context = LocalContext.current)
-                                    .data(stateProduct.images.first())
+                                    .data(stateProduct.images.firstOrNull())
                                     .crossfade(true)
                                     .placeholder(R.drawable.app)
                                     .build(),
