@@ -1,6 +1,5 @@
 package com.androsh.shopee.ui.info
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +36,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +47,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -77,13 +79,29 @@ import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.ui.navigation.Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Info(
     navController: NavHostController, innerPadding: PaddingValues, infoViewModel: InfoViewModel
 ) {
-    Box(modifier = Modifier.padding(innerPadding)) {
-        MainInfo(navController, infoViewModel)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("DummyJSON") },
+                colors =TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                )
+            )
+        },
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            MainInfo(navController, infoViewModel)
+        }
     }
+
 }
 
 //@Preview(showSystemUi = true)
