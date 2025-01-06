@@ -219,7 +219,6 @@ private fun CategoryProduct(infoViewModel: InfoViewModel) {
                 ) {
                     Box(
                         modifier = Modifier
-
                             .padding(16.dp)
                     ) {
                         Text(text = it.name)
@@ -277,7 +276,7 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
         )
     }
     if (uiState.error != null) {
-        Snackbar {
+        Snackbar(modifier = Modifier.padding(4.dp)) {
             Text(text = "Error to verifier connexion")
         }
     }

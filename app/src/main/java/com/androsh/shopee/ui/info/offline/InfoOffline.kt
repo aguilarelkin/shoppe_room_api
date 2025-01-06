@@ -1,16 +1,18 @@
 package com.androsh.shopee.ui.info.offline
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -30,6 +32,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -58,12 +61,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
@@ -75,6 +78,7 @@ import coil.request.ImageRequest
 import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.ui.navigation.Route
+import com.androsh.shopee.ui.theme.DarkColor
 
 @Composable
 fun InfoOffline(
@@ -157,7 +161,7 @@ private fun TopBar(
             onClick = { navController.navigate(Route.OperationOfflineCreate.route) },
             modifier = Modifier.padding(8.dp)
         ) {
-            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add", tint = Color.Blue)
+            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
         }
 
         DropdownButton(onSelectionChange = { selectedOption ->
@@ -178,9 +182,7 @@ fun DropdownButton(
     Box(modifier = Modifier.padding(8.dp)) {
         IconButton(onClick = { expanded = true }) {
             Icon(
-                imageVector = Icons.Filled.List,
-                contentDescription = "Dropdown arrow",
-                tint = Color.Blue
+                imageVector = Icons.Filled.List, contentDescription = "Dropdown arrow"
             )
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -207,7 +209,7 @@ private fun CategoryProduct(infoViewModel: InfoViewModelOffline) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(4.dp)
                         .clickable {
                             /*infoViewModel.filterProducts(it.name)*/
                         },
@@ -215,23 +217,13 @@ private fun CategoryProduct(infoViewModel: InfoViewModelOffline) {
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Box(
-                        modifier = Modifier
-                            .background(
-                                Brush.horizontalGradient(
-                                    listOf(
-                                        Color.White, Color.Cyan
-                                    )
-                                )
-                            )
-                            .padding(16.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = it.name, color = Color.Black)
+                        Text(text = it.name)
                     }
                 }
-
             }
         }
-
     }
 }
 
@@ -288,12 +280,12 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
         )
     }
     if (uiState.error != null) {
-        Snackbar {
+        Snackbar(modifier = Modifier.padding(4.dp)) {
             Text(text = "Error to verifier connexion")
         }
     }
     if (uiState.error == null && uiState.products.isEmpty()) {
-        Snackbar {
+        Snackbar(modifier = Modifier.padding(4.dp)) {
             Text(text = "No existe productos")
         }
     }
@@ -316,7 +308,7 @@ private fun ItemProduct(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(4.dp)
             .clickable { startDescription(navController, product.id.toString()) },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         shape = RoundedCornerShape(16.dp),
@@ -340,10 +332,13 @@ private fun ItemProduct(
 
         }
         TextData(info = product.title, size = 15.sp)
-        Divider()
+        Divider(modifier = Modifier.padding(horizontal = 8.dp))
         TextData(info = product.category, size = 18.sp)
         Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val dataPrice = if (product.stock > 0) {
                 product.price
@@ -365,7 +360,9 @@ private fun ItemProduct(
                 )
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Edit, contentDescription = "Edit", tint = Color.Blue
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "Edit",
+                    tint = DarkColor.secondary
                 )
             }
             IconButton(onClick = {
@@ -374,7 +371,7 @@ private fun ItemProduct(
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = "Delete",
-                    tint = Color.Blue
+                    tint = DarkColor.errorContainer
                 )
             }
         }
@@ -423,6 +420,9 @@ private fun PageOffline(navController: NavHostController) {
                 ModOnline(navController)
 
             },
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = DarkColor.onPrimary, contentColor = DarkColor.onSecondary
+            ),
             enabled = pageState.currentPage < pageState.pageCount - 1,
             modifier = Modifier
                 .weight(1f)
@@ -455,7 +455,7 @@ fun TextData(info: String, size: TextUnit) {
     Text(
         fontSize = size,
         fontStyle = FontStyle.Normal,
-        modifier = Modifier.padding(2.dp),
+        modifier = Modifier.padding(horizontal = 8.dp),
         text = info,
         softWrap = false,
         overflow = TextOverflow.Ellipsis
@@ -466,15 +466,39 @@ fun TextData(info: String, size: TextUnit) {
 private fun DialogDelete(showDialog: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     if (showDialog) {
         AlertDialog(onDismissRequest = { onDismiss() }, confirmButton = {
-            Button(onClick = { onConfirm() }) {
+            Button(
+                onClick = { onConfirm() }, colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                )
+            ) {
                 Text(text = "Delete")
             }
         }, title = {
-            Text(text = "Delete product")
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Eliminar",
+                    tint = Color.Red,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Eliminar Producto", style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold, color = Color.Red
+                    )
+                )
+            }
         }, text = {
             Text(text = "¿Estás seguro de eliminar el producto?")
         }, dismissButton = {
-            Button(onClick = { onDismiss() }) {
+            Button(onClick = { onDismiss() } ,     colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            )) {
                 Text(text = "Cancel")
             }
         })
