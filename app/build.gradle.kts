@@ -4,6 +4,8 @@ plugins {
     //alias(libs.plugins.kotlin.kapt)
     //DaggerHilt
     alias(libs.plugins.dagger.hilt.google)
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     kotlin("kapt")
 }
 
@@ -95,6 +97,11 @@ dependencies {
 
     //Coil
     implementation(libs.coil.image)
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

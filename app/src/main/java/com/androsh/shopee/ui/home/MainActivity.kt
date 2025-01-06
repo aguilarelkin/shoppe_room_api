@@ -1,7 +1,8 @@
 package com.androsh.shopee.ui.home
 
 import android.os.Bundle
-import android.view.WindowManager
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,8 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -34,12 +33,17 @@ import com.androsh.shopee.ui.operation.OperationViewModel
 import com.androsh.shopee.ui.operation.offline.OperationOffline
 import com.androsh.shopee.ui.operation.offline.OperationOfflineViewModel
 import com.androsh.shopee.ui.theme.ShopeeTheme
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = true
+
         enableEdgeToEdge()
         setContent {
             ShopeeTheme(darkTheme = true) {
@@ -47,6 +51,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
                         MainNavigation(innerPadding)
                     }
                 }

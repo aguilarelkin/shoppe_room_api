@@ -80,6 +80,7 @@ import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.theme.DarkColor
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 @Composable
 fun Info(
@@ -104,6 +105,26 @@ private fun MainInfo(navController: NavHostController, infoViewModel: InfoViewMo
         )
         PageOffline(navController)
         CategoryProduct(infoViewModel)
+        Button(
+            onClick = {     try {
+                // Simulamos un error controlado
+                val result = "100".toInt() / 0 // Esto provocará una ArithmeticException
+            } catch (e: Exception) {
+                // Capturamos la excepción y la enviamos a Crashlytics
+                FirebaseCrashlytics.getInstance().recordException(e)
+            } },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.error
+            )
+        ) {
+            Text(
+                text = "Test Crash",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
         LevelText(product = "Productos")
         ListProduct(navController, infoViewModel)
     }
