@@ -3,8 +3,9 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     alias(libs.plugins.dagger.hilt.google) apply false
-    id("com.google.gms.google-services") version "4.4.2" apply false
-    id("com.google.firebase.crashlytics") version "2.9.9" apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+
     //DaggerHilt
     //id("org.jetbrains.kotlin.kapt") version "1.9.22" apply false
 }
