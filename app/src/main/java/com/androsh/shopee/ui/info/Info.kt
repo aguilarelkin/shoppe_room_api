@@ -1,5 +1,6 @@
 package com.androsh.shopee.ui.info
 
+import android.app.Activity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,10 +48,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,12 +66,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -79,24 +81,11 @@ import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.ui.navigation.Route
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Info(
     navController: NavHostController, innerPadding: PaddingValues, infoViewModel: InfoViewModel
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("DummyJSON") },
-                colors =TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White
-                )
-            )
-        },
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             MainInfo(navController, infoViewModel)
         }

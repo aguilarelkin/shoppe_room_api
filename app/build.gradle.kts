@@ -22,8 +22,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        javaCompileOptions{
-            annotationProcessorOptions{
+        javaCompileOptions {
+            annotationProcessorOptions {
                 arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
             }
         }
@@ -33,8 +33,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
