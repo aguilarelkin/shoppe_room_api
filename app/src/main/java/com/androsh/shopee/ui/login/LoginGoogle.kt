@@ -1,7 +1,6 @@
 package com.androsh.shopee.ui.login
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.theme.DarkColor
 
 @Composable
@@ -41,7 +41,6 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
         val pa = paddingValues
         val context: Context = LocalContext.current
         if (uiState.isLoading) {
-            Log.e("loadinggggggggggggg", "loading in progress")
             CircularProgressIndicator(
                 color = Color.White, // Color del progreso
                 strokeWidth = 8.dp, // Grosor del indicador
@@ -52,6 +51,7 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
         if (uiState.isSuccess) {
             LaunchedEffect(uiState.isSuccess) {
                 Toast.makeText(context, "Login Exitoso", Toast.LENGTH_LONG).show()
+                navController.navigate(Route.Home.route)
             }
         }
 

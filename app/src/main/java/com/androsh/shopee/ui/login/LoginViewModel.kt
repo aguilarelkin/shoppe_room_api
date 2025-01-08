@@ -52,6 +52,8 @@ class LoginViewModel @Inject constructor(
             if (result != null) {
                 _uiState.value =
                     _uiState.value.copy(isLogin = true, isLoading = false, user = result)
+            } else {
+                _uiState.value = _uiState.value.copy(isLogin = false, isLoading = false)
             }
         }
     }

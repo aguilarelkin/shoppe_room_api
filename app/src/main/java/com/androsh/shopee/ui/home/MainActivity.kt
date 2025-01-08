@@ -10,6 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
@@ -78,8 +81,14 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
     val operationOfflineViewModel: OperationOfflineViewModel =
         hiltViewModel<OperationOfflineViewModel>()
     val loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
+    val uiState by loginViewModel.uiState.collectAsState()
 
-    NavHost(navController = navController, startDestination = Route.Login.route) {
+    LaunchedEffect(Unit) {
+        loginViewModel.isLoginGoogle()
+    }
+    val startDestination = if (uiState.isLogin) Route.Home.route else Route.Login.route
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Route.Home.route) {
             Info(navController, innerPadding, infoViewModel)
         }

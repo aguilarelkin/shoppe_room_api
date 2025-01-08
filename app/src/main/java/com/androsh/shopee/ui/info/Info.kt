@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -40,6 +41,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -73,11 +76,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
+import com.androsh.shopee.ui.login.LoginViewModel
 import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.theme.DarkColor
 
@@ -85,7 +90,20 @@ import com.androsh.shopee.ui.theme.DarkColor
 fun Info(
     navController: NavHostController, innerPadding: PaddingValues, infoViewModel: InfoViewModel
 ) {
-    Scaffold { innerPadding ->
+    val loginViewModel: LoginViewModel = hiltViewModel()
+
+    Scaffold(containerColor = DarkColor.primaryContainer, floatingActionButton = {
+        FloatingActionButton(onClick = {
+            loginViewModel.signOut()
+            navController.navigate(Route.Login.route)
+        }) {
+            Icon(
+                imageVector = Icons.Default.ExitToApp,
+                contentDescription = "Cerrar sesión",
+                tint = Color.White
+            )
+        }
+    }, floatingActionButtonPosition = FabPosition.End) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             MainInfo(navController, infoViewModel)
         }
