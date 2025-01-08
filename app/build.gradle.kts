@@ -80,6 +80,7 @@ dependencies {
     //DaggerHilt
     implementation(libs.dagger.hilt.android)
     implementation(libs.dagger.hilt.navigation)
+
     //implementation(libs.androidx.material3.android)
     kapt(libs.kapt.hilt)
     implementation(libs.dagger.javapoet)
@@ -102,6 +103,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.gms.play.services.auth)
+    implementation(libs.googleid)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

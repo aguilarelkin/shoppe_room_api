@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.androsh.shopee.data.RepositoryLoginImpl
 import com.androsh.shopee.data.RepositoryProductImpl
 import com.androsh.shopee.data.RepositoryProuctRoomImpl
 import com.androsh.shopee.data.database.ProductDatabase
 import com.androsh.shopee.data.database.dao.DaoProduct
+import com.androsh.shopee.domain.repository.LoginRepository
 import com.androsh.shopee.domain.repository.ProductRepository
 import com.androsh.shopee.domain.repository.ProductRepositoryRoom
 import dagger.Module
@@ -31,9 +33,7 @@ object NetworkModule {
     private val MIGRATION_2_3 = object : Migration(2, 3) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL(
-                "CREATE TABLE category_new (id INTEGER NOT NULL, " + "name TEXT NOT NULL, " +
-                        "url TEXT NOT NULL, " +
-                        "PRIMARY KEY(id))"
+                "CREATE TABLE category_new (id INTEGER NOT NULL, " + "name TEXT NOT NULL, " + "url TEXT NOT NULL, " + "PRIMARY KEY(id))"
             )
 
             // 2. Copiar los datos
@@ -109,6 +109,15 @@ object NetworkModule {
     @Provides
     fun provideRepositoryProduct(daoProduct: DaoProduct): ProductRepositoryRoom {
         return RepositoryProuctRoomImpl(daoProduct)
+    }
+
+    /**
+     * Return login Google
+     */
+    @Singleton
+    @Provides
+    fun provideLoginRepository(@ApplicationContext context: Context): LoginRepository {
+        return RepositoryLoginImpl(context)
     }
 
 }

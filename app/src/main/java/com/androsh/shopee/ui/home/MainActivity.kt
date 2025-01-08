@@ -1,8 +1,6 @@
 package com.androsh.shopee.ui.home
 
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,6 +25,8 @@ import com.androsh.shopee.ui.info.Info
 import com.androsh.shopee.ui.info.InfoViewModel
 import com.androsh.shopee.ui.info.offline.InfoOffline
 import com.androsh.shopee.ui.info.offline.InfoViewModelOffline
+import com.androsh.shopee.ui.login.LoginGoogle
+import com.androsh.shopee.ui.login.LoginViewModel
 import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.operation.Operation
 import com.androsh.shopee.ui.operation.OperationViewModel
@@ -34,15 +34,15 @@ import com.androsh.shopee.ui.operation.offline.OperationOffline
 import com.androsh.shopee.ui.operation.offline.OperationOfflineViewModel
 import com.androsh.shopee.ui.theme.ShopeeTheme
 import com.google.firebase.FirebaseApp
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-       // FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = true
 
         enableEdgeToEdge()
         setContent {
@@ -77,8 +77,9 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
     val operationViewModel: OperationViewModel = hiltViewModel<OperationViewModel>()
     val operationOfflineViewModel: OperationOfflineViewModel =
         hiltViewModel<OperationOfflineViewModel>()
+    val loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 
-    NavHost(navController = navController, startDestination = Route.Home.route) {
+    NavHost(navController = navController, startDestination = Route.Login.route) {
         composable(Route.Home.route) {
             Info(navController, innerPadding, infoViewModel)
         }
@@ -136,6 +137,9 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
                 navController,
                 infoViewModelOffline
             )
+        }
+        composable(route = Route.Login.route) {
+            LoginGoogle(loginViewModel, navController)
         }
     }
 }
