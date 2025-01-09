@@ -25,16 +25,23 @@ class DescriptionViewModel @Inject constructor(
     private var _stateLoading = MutableStateFlow<Boolean>(false)
     val stateLoading: StateFlow<Boolean> = _stateLoading
 
+    fun initData() {
+        _stateProduct.value = ProductModel()
+        _stateLoading.value = false
+    }
+
     /**
      * Get product for id
      */
     fun getProductId(id: String) {
+        _stateLoading.value = true
         viewModelScope.launch {
             try {
                 val result: ProductModel = withContext(Dispatchers.IO) {
                     productRepository.getProduct(id)
                 }
                 _stateProduct.value = result
+                _stateLoading.value = false
             } catch (e: Exception) {
                 Log.e("getProductId", "Error al obtener producto: ${e.message}")
             }

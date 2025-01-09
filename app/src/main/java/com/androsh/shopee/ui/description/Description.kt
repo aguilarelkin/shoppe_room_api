@@ -55,8 +55,10 @@ fun DescriptionScreen(
         return
     }
     if (offline) {
+        descriptionViewModel.initData()
         descriptionViewModel.getProductRoomId(id)
     } else {
+        descriptionViewModel.initData()
         descriptionViewModel.getProductId(id)
     }
     DescriptionCard(descriptionViewModel, navController)
