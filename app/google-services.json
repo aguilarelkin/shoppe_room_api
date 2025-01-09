@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "794828671760-djoaon4l64jsf45dlhpjh7hup5brrm78.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.androsh.shopee",
+            "certificate_hash": "e0d4d6b49786e4a20d85df0c8c9e5a1b3a0de96a"
+          }
+        },
+        {
           "client_id": "794828671760-dlvsdvmka58vd1si19m3fscer7o8hftq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
