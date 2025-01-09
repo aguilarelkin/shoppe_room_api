@@ -40,13 +40,6 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
     Scaffold(containerColor = DarkColor.primaryContainer) { paddingValues: PaddingValues ->
         val pa = paddingValues
         val context: Context = LocalContext.current
-        if (uiState.isLoading) {
-            CircularProgressIndicator(
-                color = Color.White, // Color del progreso
-                strokeWidth = 8.dp, // Grosor del indicador
-                modifier = Modifier.size(96.dp) // Tamaño del ProgressBar
-            )
-        }
 
         if (uiState.isSuccess) {
             LaunchedEffect(uiState.isSuccess) {
@@ -55,7 +48,6 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
             }
         }
 
-        // Si hay un error, mostramos el mensaje de error
         if (!uiState.errorMessage.isNullOrBlank()) {
             LaunchedEffect(uiState.errorMessage) {
                 Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_LONG).show()
@@ -75,32 +67,35 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
                 Spacer(Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        loginViewModel.loginWithGoogle()
-
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = DarkColor.tertiary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = ButtonDefaults.buttonElevation(8.dp),
-                ) {
-                    Text(
-                        text = "Google", style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-
-                            ), modifier = Modifier.padding(vertical = 8.dp)
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White, strokeWidth = 8.dp, modifier = Modifier.size(96.dp)
                     )
+                } else {
+                    Button(
+                        onClick = {
+                            loginViewModel.loginWithGoogle()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DarkColor.tertiary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = ButtonDefaults.buttonElevation(8.dp),
+                    ) {
+                        Text(
+                            text = "Google", style = MaterialTheme.typography.titleLarge.copy(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+
+                                ), modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
                 }
             }
-
         }
     }
-
 }

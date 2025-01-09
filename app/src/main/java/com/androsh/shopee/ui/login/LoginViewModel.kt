@@ -68,6 +68,13 @@ class LoginViewModel @Inject constructor(
                 isLogin = false
             )
             loginRepository.signOut()
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                isSuccess = false,
+                errorMessage = null,
+                user = null,
+                isLogin = false
+            )
         }
     }
 }

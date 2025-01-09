@@ -88,9 +88,11 @@ import com.androsh.shopee.ui.theme.DarkColor
 
 @Composable
 fun Info(
-    navController: NavHostController, innerPadding: PaddingValues, infoViewModel: InfoViewModel
+    navController: NavHostController,
+    innerPadding: PaddingValues,
+    infoViewModel: InfoViewModel,
+    loginViewModel: LoginViewModel
 ) {
-    val loginViewModel: LoginViewModel = hiltViewModel()
 
     Scaffold(containerColor = DarkColor.primaryContainer, floatingActionButton = {
         FloatingActionButton(onClick = {

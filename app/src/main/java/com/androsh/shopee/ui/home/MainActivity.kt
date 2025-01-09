@@ -81,6 +81,7 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
     val operationOfflineViewModel: OperationOfflineViewModel =
         hiltViewModel<OperationOfflineViewModel>()
     val loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
+
     val uiState by loginViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -90,13 +91,14 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Route.Home.route) {
-            Info(navController, innerPadding, infoViewModel)
+            Info(navController, innerPadding, infoViewModel, loginViewModel)
         }
         composable(Route.HomeOffline.route) {
             InfoOffline(
                 navController = navController,
                 innerPadding = innerPadding,
-                infoViewModelOffline = infoViewModelOffline
+                infoViewModelOffline = infoViewModelOffline,
+                loginViewModel
             )
         }
 

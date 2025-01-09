@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -39,6 +40,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -77,6 +79,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.androsh.shopee.R
 import com.androsh.shopee.domain.models.ProductModel
+import com.androsh.shopee.ui.login.LoginViewModel
 import com.androsh.shopee.ui.navigation.Route
 import com.androsh.shopee.ui.theme.DarkColor
 
@@ -84,10 +87,24 @@ import com.androsh.shopee.ui.theme.DarkColor
 fun InfoOffline(
     navController: NavHostController,
     innerPadding: PaddingValues,
-    infoViewModelOffline: InfoViewModelOffline
+    infoViewModelOffline: InfoViewModelOffline,
+    loginViewModel: LoginViewModel
 ) {
-    Box(modifier = Modifier.padding(innerPadding)) {
-        MainInfo(navController, infoViewModelOffline)
+    Scaffold(floatingActionButton = {
+        FloatingActionButton(onClick = {
+            loginViewModel.signOut()
+            navController.navigate(Route.Login.route)
+        }) {
+            Icon(
+                imageVector = Icons.Default.ExitToApp,
+                contentDescription = "Cerrar sesión",
+                tint = Color.White
+            )
+        }
+    }) {
+        Box(modifier = Modifier.padding(it)) {
+            MainInfo(navController, infoViewModelOffline)
+        }
     }
 }
 
@@ -495,10 +512,12 @@ private fun DialogDelete(showDialog: Boolean, onConfirm: () -> Unit, onDismiss: 
         }, text = {
             Text(text = "¿Estás seguro de eliminar el producto?")
         }, dismissButton = {
-            Button(onClick = { onDismiss() } ,     colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            )) {
+            Button(
+                onClick = { onDismiss() }, colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                )
+            ) {
                 Text(text = "Cancel")
             }
         })
