@@ -287,31 +287,37 @@ private fun ListProduct(navController: NavHostController, infoViewModel: InfoVie
             infoViewModel.getProducts()
         }
     */
-    if (uiState.isProductDeleted) {
-        DeleteProduct(infoViewModel)
-        //  infoViewModel.onChangedUiState()
-    }
-    if (uiState.isLoading) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary, strokeWidth = 4.dp
-        )
-    }
-    if (uiState.error != null) {
-        Snackbar(modifier = Modifier.padding(4.dp)) {
-            Text(text = "Error to verifier connexion")
-        }
-    }
-    if (uiState.error == null && uiState.products.isEmpty()) {
-        Snackbar(modifier = Modifier.padding(4.dp)) {
-            Text(text = "No existe productos")
-        }
-    }
-    if (uiState.products.isNotEmpty()) {
-        LazyVerticalGrid(columns = GridCells.Adaptive(150.dp)) {
-            items(uiState.products) {
-                ItemProduct(it, navController, infoViewModel)
-            }
+    when {
 
+        uiState.isProductDeleted -> {
+            DeleteProduct(infoViewModel)
+            //  infoViewModel.onChangedUiState()
+        }
+
+        uiState.isLoading -> {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary, strokeWidth = 4.dp
+            )
+        }
+
+        uiState.error != null -> {
+            Snackbar(modifier = Modifier.padding(4.dp)) {
+                Text(text = "Error: ${uiState.error}")
+            }
+        }
+
+        uiState.products.isEmpty() -> {
+            Snackbar(modifier = Modifier.padding(4.dp)) {
+                Text(text = "No hay productos disponibles.")
+            }
+        }
+
+        else -> {
+            LazyVerticalGrid(columns = GridCells.Adaptive(150.dp)) {
+                items(uiState.products) { product ->
+                    ItemProduct(product, navController, infoViewModel)
+                }
+            }
         }
     }
 }
