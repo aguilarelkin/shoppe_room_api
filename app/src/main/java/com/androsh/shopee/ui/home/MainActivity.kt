@@ -53,11 +53,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // Only use TaskDescription.Builder if the API level is 28 (Pie) or higher
-            val taskDescription = ActivityManager.TaskDescription.Builder()
-                .setLabel(getString(R.string.app_name)) // Use app name from resources
-                .setPrimaryColor(getColor(R.color.black)) // Replace with your color
-                .build()
+            val taskDescription =
+                ActivityManager.TaskDescription.Builder().setLabel(getString(R.string.app_name))
+                    .setPrimaryColor(getColor(R.color.black)).build()
             setTaskDescription(taskDescription)
         }
         enableEdgeToEdge()
@@ -100,8 +98,7 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
     LaunchedEffect(Unit) {
         loginViewModel.isLoginGoogle()
     }
-    val startDestination =
-        Route.Home.route//if (uiState.isLogin) Route.Home.route else Route.Login.route
+    val startDestination = if (uiState.isLogin) Route.Home.route else Route.Login.route
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Route.Home.route) {
