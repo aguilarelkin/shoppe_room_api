@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".ShopeeApp"
         android:allowBackup="true"
@@ -15,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Shopee"
         tools:targetApi="31">
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="true" />
         <activity
             android:name=".ui.home.MainActivity"
             android:exported="true"

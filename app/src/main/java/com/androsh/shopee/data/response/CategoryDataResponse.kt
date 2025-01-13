@@ -8,7 +8,6 @@ data class CategoryDataResponse(
     @SerializedName("url") val url: String,
 ) {
     fun toDomain() = Category(
-        name,
-        url
+        name = name, url = url
     )
 }

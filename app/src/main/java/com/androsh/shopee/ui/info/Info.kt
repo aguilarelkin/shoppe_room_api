@@ -76,7 +76,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -286,30 +285,35 @@ fun DeleteProduct(infoViewModel: InfoViewModel) {
 @Composable
 private fun ListProduct(navController: NavHostController, infoViewModel: InfoViewModel) {
     val uiState by infoViewModel.uiState.collectAsState()
-    if (uiState.isProductDeleted) {
-        DeleteProduct(infoViewModel)
-    }
-    if (uiState.isLoading) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary, strokeWidth = 4.dp
-        )
-    }
-    if (uiState.error != null) {
-        Snackbar(modifier = Modifier.padding(4.dp)) {
-            Text(text = "Error to verifier connexion")
+    when {
+        uiState.isProductDeleted -> {
+            DeleteProduct(infoViewModel)
         }
-    }
-    if (uiState.error == null && uiState.products.isEmpty()) {
-        Snackbar(modifier = Modifier.padding(4.dp)) {
-            Text(text = "No existe productos")
-        }
-    }
-    if (uiState.products.isNotEmpty()) {
-        LazyVerticalGrid(columns = GridCells.Adaptive(150.dp)) {
-            items(uiState.products) {
-                ItemProduct(it, navController, infoViewModel)
-            }
 
+        uiState.isLoading -> {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary, strokeWidth = 4.dp
+            )
+        }
+
+        uiState.error != null -> {
+            Snackbar(modifier = Modifier.padding(4.dp)) {
+                Text(text = "Error: ${uiState.error}")
+            }
+        }
+
+        uiState.products.isEmpty() -> {
+            Snackbar(modifier = Modifier.padding(4.dp)) {
+                Text(text = "No hay productos disponibles.")
+            }
+        }
+
+        else -> {
+            LazyVerticalGrid(columns = GridCells.Adaptive(150.dp)) {
+                items(uiState.products) { product ->
+                    ItemProduct(product, navController, infoViewModel)
+                }
+            }
         }
     }
 }

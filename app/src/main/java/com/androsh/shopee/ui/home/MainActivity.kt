@@ -1,9 +1,12 @@
 package com.androsh.shopee.ui.home
 
+import android.app.ActivityManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.androsh.shopee.R
 import com.androsh.shopee.ui.description.DescriptionScreen
 import com.androsh.shopee.ui.description.DescriptionViewModel
 import com.androsh.shopee.ui.info.Info
@@ -43,10 +47,19 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // Only use TaskDescription.Builder if the API level is 28 (Pie) or higher
+            val taskDescription = ActivityManager.TaskDescription.Builder()
+                .setLabel(getString(R.string.app_name)) // Use app name from resources
+                .setPrimaryColor(getColor(R.color.black)) // Replace with your color
+                .build()
+            setTaskDescription(taskDescription)
+        }
         enableEdgeToEdge()
         setContent {
             ShopeeTheme(darkTheme = true) {
@@ -87,7 +100,8 @@ fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues
     LaunchedEffect(Unit) {
         loginViewModel.isLoginGoogle()
     }
-    val startDestination = if (uiState.isLogin) Route.Home.route else Route.Login.route
+    val startDestination =
+        Route.Home.route//if (uiState.isLogin) Route.Home.route else Route.Login.route
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Route.Home.route) {

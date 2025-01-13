@@ -22,8 +22,8 @@ class InfoViewModelOffline @Inject constructor(private val productRepositoryRoom
     val uiState: StateFlow<InfoUiState> = _uiState
 
     init {
-        getProducts()
-        getCategories()
+       // getProducts()
+       // getCategories()
     }
 
     fun onProductCreated() {

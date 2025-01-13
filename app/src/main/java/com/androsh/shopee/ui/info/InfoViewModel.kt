@@ -6,6 +6,7 @@ import com.androsh.shopee.domain.models.Category
 import com.androsh.shopee.domain.models.ProductModel
 import com.androsh.shopee.domain.repository.ProductRepository
 import com.androsh.shopee.domain.repository.ProductRepositoryRoom
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,8 +56,10 @@ class InfoViewModel @Inject constructor(
                 _uiState.value.copy(products = result, isLoading = false)
 
             } else {
+                FirebaseCrashlytics.getInstance().log("Error in getProducts")
                 _uiState.value.copy(error = "Error", isLoading = false)
             }
+
         }
     }
 
