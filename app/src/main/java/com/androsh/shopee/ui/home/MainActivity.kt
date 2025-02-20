@@ -49,19 +49,18 @@ class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun setupTaskDescription() {
+        val taskDescription =
+            ActivityManager.TaskDescription.Builder().setLabel(getString(R.string.app_name))
+                .setPrimaryColor(getColor(R.color.black)).build()
+        setTaskDescription(taskDescription)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val taskDescription =
-                ActivityManager.TaskDescription.Builder().setLabel(getString(R.string.app_name))
-                    .setPrimaryColor(getColor(R.color.black)).build()
-            setTaskDescription(taskDescription)
-        } else {
-            @Suppress("DEPRECATION") val taskDescription = ActivityManager.TaskDescription(
-                getString(R.string.app_name), null, getColor(R.color.black)
-            )
-            setTaskDescription(taskDescription)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            setupTaskDescription()
         }
         enableEdgeToEdge()
         setContent {
