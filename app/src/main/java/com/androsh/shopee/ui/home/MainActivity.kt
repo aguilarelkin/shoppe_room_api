@@ -57,6 +57,11 @@ class MainActivity : ComponentActivity() {
                 ActivityManager.TaskDescription.Builder().setLabel(getString(R.string.app_name))
                     .setPrimaryColor(getColor(R.color.black)).build()
             setTaskDescription(taskDescription)
+        } else {
+            @Suppress("DEPRECATION") val taskDescription = ActivityManager.TaskDescription(
+                getString(R.string.app_name), null, getColor(R.color.black)
+            )
+            setTaskDescription(taskDescription)
         }
         enableEdgeToEdge()
         setContent {
