@@ -94,6 +94,29 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
                                 ), modifier = Modifier.padding(vertical = 8.dp)
                         )
                     }
+                    Spacer(Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            loginViewModel.loginInAnonymously()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DarkColor.tertiary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = ButtonDefaults.buttonElevation(8.dp),
+                    ) {
+                        Text(
+                            text = "Entrar como invitado", style = MaterialTheme.typography.titleLarge.copy(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+
+                                ), modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
                 }
             }
         }

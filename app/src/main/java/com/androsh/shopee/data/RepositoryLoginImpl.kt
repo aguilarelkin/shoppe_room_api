@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import com.androsh.shopee.R
 import com.androsh.shopee.domain.repository.LoginRepository
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import java.security.MessageDigest
 import java.util.UUID
 import kotlin.coroutines.resume
@@ -22,8 +24,63 @@ import kotlin.coroutines.resumeWithException
 class RepositoryLoginImpl(private val context: Context) : LoginRepository {
     private val auth: FirebaseAuth = Firebase.auth
 
-
     override suspend fun signInWithGoogle(): FirebaseUser? {
+        val serverClientId = context.getString(R.string.google_server_client_id)
+
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(serverClientId)
+            .setAutoSelectEnabled(false)
+            .setNonce(createNonceOption())
+            .build()
+
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        val credentialManager = CredentialManager.create(context)
+
+        return try {
+            val result = credentialManager.getCredential(context, request)
+            val credential = result.credential
+
+            if (credential is CustomCredential &&
+                credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+            ) {
+                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                val idToken = googleIdTokenCredential.idToken
+                if (idToken.isNullOrEmpty()) {
+                    Log.e("GoogleSignInError", "El token de Google es nulo o vacío")
+                    return null
+                }
+                val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+
+                suspendCancellableCoroutine { continuation ->
+                    continuation.invokeOnCancellation {
+                        Log.w("FirebaseAuth", "La operación de signInWithCredential fue cancelada")
+                    }
+                    auth.signInWithCredential(firebaseCredential)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                continuation.resume(task.result.user)
+                            } else {
+                                val error = task.exception ?: Exception("Fallo al iniciar sesión con Google")
+                                Log.e("FirebaseAuthError", "Error en signInWithCredential: ${error.message}", error)
+                                continuation.resumeWithException(error)
+                            }
+                        }
+                }
+            } else {
+                Log.e("GoogleSignInError", "Tipo de credencial inválido: ${credential::class.java.simpleName}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("GoogleSignInException", "Error durante Google Sign-In: ${e.message}", e)
+            null
+        }
+    }
+
+/*    override suspend fun signInWithGoogle(): FirebaseUser? {
         val googleIdOption: GetGoogleIdOption =
             GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
                 .setServerClientId("794828671760-hgug7ikopo8bou1s5sppjjpep357ojlu.apps.googleusercontent.com")
@@ -68,10 +125,20 @@ class RepositoryLoginImpl(private val context: Context) : LoginRepository {
             Log.i("Exception", e.message ?: "")
         }
         return null
-    }
+    }*/
 
     override suspend fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
+    }
+
+    override suspend fun signInAnonymously(): FirebaseUser? {
+        try {
+            val result = auth.signInAnonymously().await()
+            val user = result.user ?: throw Exception("Login failed")
+            return user
+        } catch (e: Exception) {
+            return null
+        }
     }
 
     override suspend fun signOut() {

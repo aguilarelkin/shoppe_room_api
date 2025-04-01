@@ -12,6 +12,7 @@ import com.androsh.shopee.data.database.dao.DaoProduct
 import com.androsh.shopee.domain.repository.LoginRepository
 import com.androsh.shopee.domain.repository.ProductRepository
 import com.androsh.shopee.domain.repository.ProductRepositoryRoom
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -120,4 +121,9 @@ object NetworkModule {
         return RepositoryLoginImpl(context)
     }
 
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
 }
