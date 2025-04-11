@@ -18,7 +18,8 @@ local.properties
 /gradle/
 
 app/google-services.json
-
+app/release/*
+app/release/app-release.aab
 # Release builds
 app/release/
 *.apk
