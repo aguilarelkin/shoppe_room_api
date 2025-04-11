@@ -16,3 +16,12 @@
 local.properties
 
 /gradle/
+
+app/google-services.json
+
+# Release builds
+app/release/
+*.apk
+*.aab
+*.dm
+*.json
