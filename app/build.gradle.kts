@@ -17,8 +17,8 @@ android {
         applicationId = "com.androsh.shopee"
         minSdk = 24
         targetSdk = 34
-        versionCode = 100001
-        versionName = "1.2.1.1"
+        versionCode = 100002
+        versionName = "1.2.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
