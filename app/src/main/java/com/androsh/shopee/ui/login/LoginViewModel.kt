@@ -1,5 +1,6 @@
 package com.androsh.shopee.ui.login
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androsh.shopee.domain.repository.LoginRepository
@@ -38,7 +39,7 @@ class LoginViewModel @Inject constructor(
         auth.addAuthStateListener(authStateListener)
     }
 
-    fun loginWithGoogle() {
+    fun loginWithGoogle(activity: Activity) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
@@ -48,7 +49,7 @@ class LoginViewModel @Inject constructor(
                 isLogin = false
             )
             val result: FirebaseUser? = withContext(Dispatchers.IO) {
-                loginRepository.signInWithGoogle()
+                loginRepository.signInWithGoogle(activity)
             }
             if (result != null) {
                 _uiState.value =

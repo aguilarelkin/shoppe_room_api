@@ -1,6 +1,8 @@
 package com.androsh.shopee.ui.login
 
+import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +42,7 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
     Scaffold(containerColor = DarkColor.primaryContainer) { paddingValues: PaddingValues ->
         val pa = paddingValues
         val context: Context = LocalContext.current
+        val activity = context as? Activity
 
         if (uiState.isSuccess) {
             LaunchedEffect(uiState.isSuccess) {
@@ -74,7 +77,9 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
                 } else {
                     Button(
                         onClick = {
-                            loginViewModel.loginWithGoogle()
+                            activity?.let {
+                                loginViewModel.loginWithGoogle(it)
+                            } ?: Log.e("LoginScreen", "Context no es una Activity")
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -110,11 +115,13 @@ fun LoginGoogle(loginViewModel: LoginViewModel, navController: NavHostController
                         elevation = ButtonDefaults.buttonElevation(8.dp),
                     ) {
                         Text(
-                            text = "Entrar como invitado", style = MaterialTheme.typography.titleLarge.copy(
+                            text = "Entrar como invitado",
+                            style = MaterialTheme.typography.titleLarge.copy(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
 
-                                ), modifier = Modifier.padding(vertical = 8.dp)
+                                ),
+                            modifier = Modifier.padding(vertical = 8.dp)
                         )
                     }
                 }

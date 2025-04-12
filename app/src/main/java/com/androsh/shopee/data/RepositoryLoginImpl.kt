@@ -1,5 +1,6 @@
 package com.androsh.shopee.data
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.credentials.CredentialManager
@@ -26,7 +27,7 @@ import kotlin.coroutines.resumeWithException
 class RepositoryLoginImpl(private val context: Context) : LoginRepository {
     private val auth: FirebaseAuth = Firebase.auth
 
-    override suspend fun signInWithGoogle(): FirebaseUser? {
+    override suspend fun signInWithGoogle(activity: Activity): FirebaseUser? {
         val serverClientId = context.getString(R.string.google_server_client_id)
 
         val googleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
@@ -35,16 +36,16 @@ class RepositoryLoginImpl(private val context: Context) : LoginRepository {
 
         val request = GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
 
-        val credentialManager = CredentialManager.create(context)
+        val credentialManager = CredentialManager.create(activity)
 
         return try {
-            val result = credentialManager.getCredential(context, request)
+            val result = credentialManager.getCredential(activity, request)
             val credential = result.credential
 
             if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 val idToken = googleIdTokenCredential.idToken
-               // require(!idToken.isNullOrEmpty()) { "ID token vacío" }
+                // require(!idToken.isNullOrEmpty()) { "ID token vacío" }
                 if (idToken.isNullOrEmpty()) {
                     Log.e("GoogleSignInError", "El token de Google es nulo o vacío")
                     val customError = IllegalStateException("El token de Google es nulo o vacío")
@@ -59,21 +60,21 @@ class RepositoryLoginImpl(private val context: Context) : LoginRepository {
                         Log.w("FirebaseAuth", "La operación de signInWithCredential fue cancelada")
                     }
                     auth.signInWithCredential(firebaseCredential).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                continuation.resume(task.result.user)
-                            } else {
-                                val error = task.exception
-                                    ?: Exception("Fallo al iniciar sesión con Google")
-                                Log.e(
-                                    "FirebaseAuthError",
-                                    "Error en signInWithCredential: ${error.message}",
-                                    error
-                                )
-                                Firebase.crashlytics.log("FirebaseAuthError - Error en signInWithCredential: ${error.message}")
-                                Firebase.crashlytics.recordException(error)
-                                continuation.resumeWithException(error)
-                            }
+                        if (task.isSuccessful) {
+                            continuation.resume(task.result.user)
+                        } else {
+                            val error =
+                                task.exception ?: Exception("Fallo al iniciar sesión con Google")
+                            Log.e(
+                                "FirebaseAuthError",
+                                "Error en signInWithCredential: ${error.message}",
+                                error
+                            )
+                            Firebase.crashlytics.log("FirebaseAuthError - Error en signInWithCredential: ${error.message}")
+                            Firebase.crashlytics.recordException(error)
+                            continuation.resumeWithException(error)
                         }
+                    }
                 }
             } else {
                 Log.e(
